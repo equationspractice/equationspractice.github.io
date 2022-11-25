@@ -109,6 +109,26 @@ function translateName(input, typeSymbols) {
 }
 
 function newPuzzle() {
+
+    // RESETTING CONTAINERS
+    inputValues.flatArray = []
+    inputValues.wrapValue = {'values': [0, 0], 'row': 0}
+    inputValues.resourceColors = {
+        "available": [[], [], [], []],
+        "used": [[], [], [], []]
+    }
+    inputValues.requiredColors = {
+        "available": [[], [], [], []],
+        "used": [[], [], [], []]
+    }
+    solutionContainer.innerHTML = ""
+    forbiddenContainer.innerHTML = ""
+    requiredContainer.innerHTML = ""
+    resourcesContainer.innerHTML = ""
+    variationsContainer.querySelector('ul').innerHTML = ""
+    goalContainer.innerHTML = ""
+    changeRows()
+
     // GEN NEW PUZZLE
 
     puzzleParamaters = {"data":"data"}
@@ -238,22 +258,18 @@ function newPuzzle() {
         }
         console.log(puzzleData.variations)
         console.log(variationsDisplay)
-        // console.groupCollapsed("QUEUE PUZZLE")
-        // const queuePuzzleWorker = new Worker('equations_worker.js');
-        // queuePuzzleWorker.postMessage(params)
+        console.groupCollapsed("QUEUE PUZZLE")
+        const queuePuzzleWorker = new Worker('equations_worker.js');
+        queuePuzzleWorker.postMessage(params)
 
-        // queuePuzzleWorker.onmessage = (e) => {
-        //     queuedPuzzleData = e.data
-        //     queuePuzzleWorker.terminate();
-        // }
+        queuePuzzleWorker.onmessage = (e) => {
+            queuedPuzzleData = e.data
+            queuePuzzleWorker.terminate();
+        }
 
-        // mainPuzzleWorker.terminate();
+        mainPuzzleWorker.terminate();
     };
 };
-
-let puzzleData;
-let queuedPuzzleData;
-newPuzzle()
 
 // HEADING 
 const settingsIcon = document.querySelector('#settings-ico')
@@ -289,6 +305,10 @@ const inputValues = {
     },
     "wildCube": undefined
 }
+
+let puzzleData;
+let queuedPuzzleData;
+newPuzzle()
 
 submitButton.addEventListener('click', submitInput);
 const newAnswer = document.createElement('div')
