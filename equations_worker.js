@@ -70,10 +70,10 @@ onmessage = (e) => {
                     flag.push(leftFlag + "x" + rightFlag); break;
                 case "/":
                     answer.push(arr[0] / arr[2]);
-                    flag.push(leftFlag + "/" + rightFlag);
+                    flag.push(leftFlag + "÷" + rightFlag);
                     if (logarithm) {
                         answer.push(log(arr[0], arr[2]))
-                        flag.push(leftFlag + 'log' + rightFlag)
+                        flag.push(leftFlag + 's÷' + rightFlag)
                     }
                     break;
                 case "^":
