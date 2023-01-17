@@ -17,11 +17,11 @@ onmessage = (e) => {
             console.log(message + math.round((stopTimer.getTime() - setTimer.getTime())/1000 - start, 3) + " SECONDS")
             return;
         }
-        console.log(message + (stopTimer.getTime() - setTimer.getTime())/1000 + " SECONDS")
+        if (message) console.log(message + (stopTimer.getTime() - setTimer.getTime())/1000 + " SECONDS")
         return (stopTimer.getTime() - setTimer.getTime())/1000
     }
 
-    function generatePuzzle(randomize = false) {
+    function generatePuzzle(randomize = false, setCubes, setVariations) {
 
         let returnNewPuzzle;
 
@@ -58,6 +58,14 @@ onmessage = (e) => {
     
         function customEval(arr, leftFlag, rightFlag) {
             let arrOperation = arr[1], answer = [], flag = []
+            if (parseBigInt) {
+                try {
+                    if (typeof arr[0] === 'bigint') arr[2] = BigInt(arr[2])
+                    if (typeof arr[2] === 'bigint') arr[0] = BigInt(arr[0])
+                } catch {
+                    return [[], []]
+                }
+            }
             switch (arrOperation) {
                 case "+":
                     answer.push(arr[0] + arr[2]);
@@ -157,7 +165,11 @@ onmessage = (e) => {
         let cubesArr;
     
         (function generateCubes() {
-
+            if (setCubes) {
+                cubesArr = setCubes;
+                console.log(cubesArr);
+                return;
+            }
             cubesArr = []
 
             const redCubes = [];
@@ -233,7 +245,32 @@ onmessage = (e) => {
     
         (function generateVariations() {
             variationsMap = new Map();
-            
+            console.log(setVariations)
+            // setVariations = ['base', 'factorial', 'numberOfFactors']
+            if (setVariations) {
+                for (let x of setVariations) {
+                    switch (x) {
+                        case "wild": variationsMap.set("wild", variationInput("wild")); break;
+                        case "powersOfBase": variationsMap.set("powersOfBase", true); break;
+                        // case "base": variationsMap.set('base', variationInput("base")); break;
+                        case "base": variationsMap.set('base', 12); break;
+                        case "multipleOf": variationsMap.set("multipleOf", variationInput('multipleOf')); break;
+                        case "multipleOperations": variationsMap.set("multipleOperations", true); break;
+                        case "factorial": variationsMap.set("factorial", true); break;
+                        case "numberOfFactors": variationsMap.set("numberOfFactors", true); break;
+                        case "exponent":
+                            while (!variationsMap.get('exponent')) {
+                                let exponentColor = variationInput("exponent")
+                                let coloredNumerals = cubesArr[exponentColor[0]].filter(val => typeof val === "number")
+                                if (coloredNumerals.length) variationsMap.set("exponent", exponentColor[1]);
+                            }
+                            break;
+                        case "imaginary": variationsMap.set("imaginary", true); break;
+                        case "decimal": variationsMap.set("decimal", true); break;
+                        case "log": variationsMap.set("log", true); break;
+                    };
+                };
+            };
             function variationInput(input) { // GENERATES INPUT FOR VARIATIONS THAT REQUIRE INPUTS
                 switch (input) {
                     case "wild": return getRandomNumber(0, 1) && cubesArr.flat().includes(0) ? 0 : "x";
@@ -461,7 +498,7 @@ onmessage = (e) => {
                 goalAdd(randomNumerals.filter(zeroFilter)[0]);
     
                 //APPEND OPERATION AND NUMERALS
-                if (randomOperations[0] === "^")  { // IF EXPONENT, APPEND IT + 1 NUMERAL
+                if (randomOperations[0] === "^" ** variationsMap.get('multipleOf'))  { // IF EXPONENT, APPEND IT + 1 NUMERAL
                     goalAdd(randomOperations[0]);
                     goalAdd(randomNumerals.filter(zeroFilter)[0]);
                     goalStatus.push("EXPONENTOP");
@@ -515,10 +552,10 @@ onmessage = (e) => {
                 // variationsMap.set('base', undefined)
                 // variationsMap.set('decimal', true)
                 // variationsMap.set('multipleOf', 11)
-                // let goalString = "4^735"
+                // let goalString = "4^73+5"
                 // console.log(strToArr(goalString))
                 // for (let x of strToArr(goalString)) goalArr.push(new GoalCube(x, 'black', 'up'));
-                console.log(goalArr)
+                // console.log(goalArr)
 
                 let newGoalArr = [];
                 for (let i = 0; i < goalArr.length; i++) {
@@ -838,12 +875,12 @@ onmessage = (e) => {
             // console.log(total)
             // logTime("POST", foo)
             // throw "STOP"
-            
             function solutionCycle(arr, numerals, operations) {
                 if (stop) return
                 if (permutationsArr.length % 100000 === 0 && permutationsArr.length) {
                     console.log((permutationsArr.length/1000) + " THOUSAND")
-                    if (logTime() > 7) return;
+                    console.log(logTime())
+                    if (logTime() > 7) stop = true;
                 }
                 if (!solutionLengths.includes(arr.length)) {
                     let permutationValues = calcSolution(arr)
@@ -954,7 +991,7 @@ onmessage = (e) => {
             forbiddenArr = deleteFirstArrItem(forbiddenArr, toPush);
         }
         console.log(forbiddenArr)
-        if (returnNewPuzzle) return generatePuzzle();
+        if (returnNewPuzzle) return generatePuzzle(randomize, setCubes);
         class PuzzleData {
             constructor(cubesArr, modifiedCubesArr, variations, goalArr, goalValues, goalModValues, forbiddenArr, solution) {
                 this.cubes = cubesArr;
@@ -973,6 +1010,7 @@ onmessage = (e) => {
     let queueData = generatePuzzle(...e.data)
     console.log(queueData)
     console.groupEnd()
+    console.log('DONE GENERATION')
 
     postMessage(queueData);
 }

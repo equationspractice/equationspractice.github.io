@@ -1,9 +1,323 @@
-let setTimer = new Date()
+let setTimer = new Date();
+
+function clone(arr) {
+    return JSON.parse(JSON.stringify(arr))
+}
 
 function logTime(message = "") {
     let stopTimer = new Date();
     console.log(message + (stopTimer.getTime() - setTimer.getTime())/1000 + " SECONDS")
-}
+};
+
+// [1, 2, 3, 4, 5, 6, 7, 8, 9, '+', '−', 'x', '÷', '^', '√', '(', ')']
+
+(function eval() {
+    return
+
+    function operation(arr) {
+        if (arr.length === 1) {
+            return arr[0]
+        } else if (arr.length === 3) {
+            if (typeof arr[0] === 'object' || typeof arr[2] === 'object') {
+                switch (arr[1]) {
+                    case "+":
+                        return math.add(arr[0], arr[2]);
+                    case "−":
+                        return math.subtract(arr[0], arr[2]);
+                    case "x":
+                        return math.multiply(arr[0], arr[2]);
+                    case "÷":
+                        return math.divide(arr[0], arr[2]);
+                    case "^":
+                        return math.pow(arr[0], arr[2]);
+                }
+            }
+            switch (arr[1]) {
+                case "+":
+                    return (arr[0] + arr[2]);
+                case "−":
+                    return (arr[0] - arr[2]);
+                case "x":
+                    return (arr[0] * arr[2]);
+                case "÷":
+                    return (arr[0] / arr[2]);
+                case "^":
+                case "*":
+                    return (arr[0] ** arr[2]);
+            }
+        } else if (arr.length > 3) {
+            return operation([operation(arr.slice(0, 3)), arr[3], ...arr.slice(4, arr.length)])
+        }
+    };
+    
+    function evaluate(input) {
+
+        // console.groupCollapsed("EVALUATE")
+        
+        let inputsArr = [input.slice()];
+        let returnArr = []
+
+        function addPermutation(index, char, replace) {
+            if (inputsArr.length > 50) return;
+            if (replace) {
+                for (let arr of inputsArr) arr[index] = char;
+            } else {
+                for (let arr of inputsArr.slice('')) {
+                    newArr = arr.slice('');
+                    newArr[index] = char;
+                    inputsArr.push(newArr);
+                };
+            };
+        };
+
+        function checkValidity(arr) {
+            let string = arr.map(val => {
+                if (number(val).includes('natural')) return 'n'
+                if (number(val).includes('fraction')) return 'f'
+                if (number(val).includes('negative')) return '-'
+                if (number(val).includes('complex')) return 'i'
+                return val
+            }).join("")
+            // .replace(/[!]/g, '')
+            if (!/[f][fnjk]|[fnjk][f]|[fnjk]{3,}|([+−x÷l^]){2,}|√[+−x÷l^]|#[+−x÷l^]|[fnjk]#|^[x^]/.test(string)) return true;
+            return false;
+        }
+        
+        for (let i = 0; i < input.length; i++) {
+            let replace = (i === input.length - 1)
+            if (input[i] === '^' && puzzleData.variations.get('base') >= 11) {
+                addPermutation(i, 'j', replace);
+            } else if (input[i] === '√' && puzzleData.variations.get('base') >= 12) {
+                addPermutation(i, 'k', replace);
+            } else if (input[i] === 'x' && puzzleData.variations.get('numberOfFactors')) {
+                addPermutation(i, '#');
+            }
+            for (let j = 0; j < inputsArr.length; j++) {
+                if (!checkValidity(inputsArr[j].slice(0, i + 1))) {
+                    inputsArr = inputsArr.slice(0, j).concat(inputsArr.slice(j + 1));
+                    j--
+                };
+            };
+        };
+
+        console.log(input)
+        console.log(inputsArr)
+
+        function number(val) {
+            let arr = []
+            if (typeof val === 'number' || val === 'j' || val === 'k') {
+                arr.push('number', 'complex')
+                if (val % 1 === 0 || val === 'j' || val === 'k') return ['number','natural','complex']
+                if (val < 0) arr.push('negative')
+                if (val % 1 !== 0) arr.push('fraction')
+            } else if (typeof val === "string") {
+                arr.push('operation')
+                if (val === "√") arr.push('root')
+            } else if (typeof val === 'object') {
+                arr.push('complex')
+            }
+            return arr
+        }
+
+        function base10(num) {
+            switch (num) {
+                case 'j': return 10;
+                case 'k': return 11;
+                default: return num;
+            }
+        }
+
+        function numFactors(num) {
+            let length = 0, arr = [];
+        
+            function generateDivisors(curIndex, curDivisor, arr) {
+                if (curIndex == arr.length) {
+                    length++;
+                    return;
+                }
+                for (let i = 0; i <= arr[curIndex][0]; i++) {
+                    generateDivisors(curIndex + 1, curDivisor, arr);
+                    curDivisor *= arr[curIndex][1];
+                }
+            }
+        
+            for (let i = 2; i * i <= num; i++) {
+                if (num % i == 0) {
+                    let count = 0;
+                    while (num % i == 0) {
+                        num /= i;
+                        count += 1;
+                    }
+                    arr.push([count, i]);
+                }
+            }
+            if (num > 1) arr.push([ 1, num ]);
+            let curIndex = 0, curDivisor = 1;
+        
+            generateDivisors(curIndex, curDivisor, arr);
+            return length;
+        };
+
+        function factorial(num) {
+            if (num < 0 || num % 1 !== 0) return 'Invalid Factorial'
+            let factorial = 1;
+            for (let i = num; i > 0; i--, num--) factorial *= num
+            return factorial
+        };
+
+        if (!inputsArr.length) throw "No possible interpretations"
+        for (let i = 0; i < inputsArr.length; i++) {
+            let arr = []
+            for (let j = 0; j < inputsArr[i].length; j++) {
+
+                function pushNumber(input, index) {
+                    if (inputsArr[i][index] === '√') {
+                        j++
+                        return Math.sqrt(pushNumber(input, j))
+                    }
+                    if (inputsArr[i][index] === 'i') {
+                        j++
+                        return math.multiply(math.complex(0, 1), pushNumber(input, j))
+                    }
+                    if (index === input.length - 1) return base10(input[index]);
+                    if (!number(input[index + 1]).includes("natural")) return base10(input[index]);
+                    j++
+                    let base = puzzleData.variations.get('base') ?? 10
+                    return base10(input[index]) * base + base10(input[index + 1])
+                }
+
+                if (inputsArr[i][j] === '√') {
+                    let index = (number(inputsArr[i][j - 1]).includes('number')) ? arr.pop() : 2
+                    console.log(index)
+                    j++
+                    let subsequentVal = pushNumber(inputsArr[i], j)
+                    arr.push(Math.pow(subsequentVal, 1/index));
+                } else if (inputsArr[i][j] === '#') {
+                    j++
+                    let subsequentVal = pushNumber(inputsArr[i], j)
+                    arr.push(numFactors(subsequentVal));
+                } else if (inputsArr[i][j] === '!') {
+                    let previousVal = arr[arr.length - 1]
+                    arr[arr.length - 1] = factorial(previousVal)
+                } else if (inputsArr[i][j] === 'i') {
+                    let previousVal = (number(arr[arr.length - 1]).includes('complex')) ? arr.pop() : 1
+                    let subsequentVal = 1
+                    if (number(inputsArr[i][j + 1]).includes('complex')) {
+                        j++
+                        subsequentVal = pushNumber(inputsArr[i], j)
+                    }
+                    arr.push(math.multiply(previousVal, math.complex(0, 1), subsequentVal))
+                } else if (number(inputsArr[i][j]).includes("natural")) {
+                    arr.push(pushNumber(inputsArr[i], j))
+                } else {
+                    arr.push(inputsArr[i][j])
+                };
+            };
+            console.log(arr)
+            console.log(operation(arr))
+            returnArr.push([operation(arr), inputsArr[i]])
+        };
+
+        console.log(returnArr)
+        console.groupEnd()
+        return returnArr;
+        
+    };
+
+    function parseInput(arr) {
+
+        let index = [0];
+        let permutationArr = [[[], [[]]]];
+
+        function navigate(currPosition) {
+            for (let i = 0; i < index.length - 1; i++) currPosition = currPosition[index[i]]
+            return currPosition
+        };
+
+        for (let i = 0; i < arr.length; i++) {
+            for (let permutation of permutationArr.slice()) {
+                let currPosition = navigate(permutation[0])
+                if (arr[i] === "(") {
+                    currPosition[index[index.length - 1]] = [];
+                    if (!permutation[1][index.length]) {
+                        permutation[1].push(clone(permutation[1][index.length - 1]))
+                    }
+                    for (let arr of permutation[1]) {
+                        let currPosition = navigate(arr)
+                        currPosition.push([])
+                    }
+                    index.push(0)
+                } else if (arr[i] === ")") {
+                    index.pop()
+                    currPosition = permutation[0];
+                    currPosition = navigate(permutation[0])
+                    let evaluation = evaluate(currPosition[index[index.length - 1]])
+                    for (let j = 0; j < evaluation.length; j++) {
+                        let newPermutation;
+                        if (!j) {
+                            currPosition[index[index.length - 1]] = evaluation[j][0]
+                        } else {
+                            newPermutation = clone(permutation);
+                            currPosition = navigate(newPermutation[0])
+                            currPosition[index[index.length - 1]] = evaluation[j][0];
+                            permutationArr.push(newPermutation);
+                        };
+                        for (let k = 0; k < permutation[1].length; k++) {
+                            let currPosition;
+                            if (!j) {
+                                currPosition = navigate(permutation[1][k])
+                            } else {
+                                currPosition = navigate(newPermutation[1][k])
+                            }
+                            if (k >= index.length) {
+                                let newArr = currPosition[index[index.length - 1]]
+                                for (let l = 0; l < newArr.length; l++) {
+                                    if (newArr[l] === 'placeholder') newArr[l] = evaluation[j][1][l]
+                                }
+                            } else {
+                                currPosition[index[index.length - 1]] = evaluation[j][0]
+                            }
+                        }
+                    };
+                    index[index.length - 1]++
+                } else {
+                    currPosition[index[index.length - 1]] = arr[i];
+                    for (let arr of permutation[1]) {
+                        let currPosition = navigate(arr)
+                        currPosition.push('placeholder')
+                    }
+                    index[index.length - 1]++
+                };
+            };
+        };
+        let returnArr = []
+        console.log(permutationArr)
+        for (let arr of permutationArr) {
+            let evaluation = evaluate(arr[0])
+            for (let i = 0; i < evaluation.length; i++) {
+                for (let flag of arr[1]) {
+                    for (let j = 0; j < flag.length; j++) {
+                        if (flag[j] === 'placeholder') flag[j] = evaluation[i][1][j];
+                    }
+                }
+                returnArr.push([evaluation[i][0], arr[1]])
+            }
+        }
+        console.log(returnArr)
+        return returnArr;
+    };
+
+    let puzzleData = {variations: new Map([['base', 12], ['numberOfFactors', true]])}
+    // −÷√
+    let input = '2iii5+5'.split("")
+    // let input = ['√', '9']
+    for (let i = 0; i < input.length; i++) {
+        if (!isNaN(parseFloat(input[i]))) input[i] = parseFloat(input[i])
+    };
+    // console.log(parseInput(input))
+    let answer = parseInput(input)
+    // console.log(math.equal(answer[0][0], math.complex(-119, 120)))
+})();
 
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max + 1 - min)) + min;
@@ -80,6 +394,7 @@ function translateName(input, typeSymbols) {
         case "divide": return (typeSymbols) ? "/" : "÷";
         case "exponent": return "^";
         case "square-root": return "√"
+        case "factorial": return "!"
         case "left-parenthesis": return "(";
         case "right-parenthesis": return ")";
         case "1": return "one";
@@ -102,10 +417,19 @@ function translateName(input, typeSymbols) {
         case "^": return "exponent";
         case "s": return "square-root";
         case "√": return "square-root";
+        case "!": return "factorial"
         case "(": return "left-parenthesis";
         case ")": return "right-parenthesis";
         case "Backspace": return "backspace"
      };
+}
+
+function base10(num) {
+    switch (num) {
+        case 'j': return 10;
+        case 'k': return 11;
+        default: return num;
+    }
 }
 
 function newPuzzle() {
@@ -258,16 +582,22 @@ function newPuzzle() {
         }
         console.log(puzzleData.variations)
         console.log(variationsDisplay)
-        console.groupCollapsed("QUEUE PUZZLE")
-        const queuePuzzleWorker = new Worker('equations_worker.js');
-        queuePuzzleWorker.postMessage(params)
+        // console.groupCollapsed("QUEUE PUZZLE")
+        //     const queuePuzzleWorker = new Worker('equations_worker.js');
+        //     queuePuzzleWorker.postMessage(params)
 
-        queuePuzzleWorker.onmessage = (e) => {
-            queuedPuzzleData = e.data
-            queuePuzzleWorker.terminate();
-        }
+        //     queuePuzzleWorker.onmessage = (e) => {
+        //         queuedPuzzleData = e.data
+        //         queuePuzzleWorker.terminate();
+        //     }
 
         // mainPuzzleWorker.terminate();
+        let string = '1+(5+(5+5))'
+        for (let i = 0; i < string.length; i++) {
+            inputCube(translateName(string.charAt(i)))
+        }
+        submitInput()
+
     };
 };
 
@@ -322,16 +652,21 @@ answerBackground.addEventListener('click', function(){
     answerBackground.classList.remove('shown')
 })
 let keyboardActive = true;
-solutionContainer.addEventListener('click', showKeyboard);
-// solutionHoverContainer.addEventListener('click', showKeyboard);
+solutionContainer.addEventListener('click', toggleKeyboard);
 keyboardContainer.addEventListener('click', function(e) {e.stopPropagation()})
 document.addEventListener('click', hideKeyboard);
 
+
+function toggleKeyboard(e) {
+    e.stopPropagation();
+    keyboardActive = !keyboardActive;
+    keyboardContainer.classList.toggle("hidden")
+};
 function showKeyboard(e) {
     e.stopPropagation();
     keyboardActive = true;
     keyboardContainer.classList.remove("hidden")
-};
+}
 function hideKeyboard() {
     keyboardActive = false;
     keyboardContainer.classList.add("hidden")
@@ -347,6 +682,7 @@ for (let button of keyboardButtons) button.addEventListener('click', function() 
 function inputCube(cube) {
     if (document.querySelector('.selector-container')) return;
     if (cube === undefined) return;
+    if (cube === 'factorial' && !puzzleData.variations.get('factorial')) return;
     let input, flatArray, wrap;
     input = solutionContainer;
     flatArray = inputValues.flatArray;
@@ -430,6 +766,7 @@ function inputCube(cube) {
                 if (/[0123]/.test(currCube)) color = randomArrayValue(["red", "blue"])
                 if (/[456\^]/.test(currCube)) color = "green"
                 if (/[789√]/.test(currCube)) color = "black"
+                if (currCube === "!") color = "red"
                 if (currCube === "+") color = randomArrayValue(["red", "black"])
                 if (currCube === "−") color = randomArrayValue(["red", "green"])
                 if (currCube === "x") color = randomArrayValue(["blue", "green"])
@@ -441,9 +778,21 @@ function inputCube(cube) {
     //     solutionCube.classList.add('wild-cube')
     //     solutionCube.addEventListener('click', toggleWildPicker)
     // }
-    if (/\d/.test(currCube)) solutionCube.addEventListener('click', toggleSelector)
-    if (puzzleData.variations.get('base') > 10 && currCube === "^") solutionCube.addEventListener('click', toggleSelector)
-    if (puzzleData.variations.get('base') > 11 && currCube === "√") solutionCube.addEventListener('click', toggleSelector)
+    if (/\d/.test(currCube)) {
+        solutionCube.addEventListener('click', toggleSelector);
+        solutionCube.classList.add('pointer')
+    }
+    if (puzzleData.variations.get('imaginary') && currCube === "−") {
+        solutionCube.addEventListener('click', toggleSelector);
+        solutionCube.classList.add('pointer')
+    }
+    if (puzzleData.variations.get('log') && currCube === "÷") {
+        solutionCube.addEventListener('click', toggleSelector);
+        solutionCube.classList.add('pointer')
+    }
+    if (puzzleData.variations.get('base') > 10 && currCube === "^") {solutionCube.addEventListener('click', toggleSelector); solutionCube.classList.add('pointer')}
+    if (puzzleData.variations.get('base') > 11 && currCube === "√") {solutionCube.addEventListener('click', toggleSelector); solutionCube.classList.add('pointer')}
+    solutionCube.addEventListener('click', showKeyboard)
     if (checkInputWidth(cubeWidth)) {
         flatArray.push(currCube)
         input.append(solutionCube);
@@ -542,6 +891,7 @@ const selectorBackground = document.createElement('div')
 selectorBackground.id = 'selector-background'
 selectorBackground.addEventListener('click', hideSelector)
 document.body.append(selectorBackground)
+
 function toggleSelector(e) {
     e.stopPropagation()
     if (document.querySelector('.selector-container')) {
@@ -591,13 +941,27 @@ function toggleSelector(e) {
 
 function hideSelector(e) {
     e.stopPropagation()
-    let activeCube = document.querySelector('.cube.active')
-    if (activeCube) activeCube.classList.remove('active')
     const selectorContainer = document.querySelector('.selector-container')
-    selectorContainer.addEventListener('transitionend', function (){
-        console.log(this.classList)
+    if (!selectorContainer.classList.contains('shown')) return;
+    // console.log("D")
+    let element = solutionContainer, minX = 0, minY = 0;
+    while (true) {
+        minX += element.offsetLeft;
+        minY += element.offsetTop;
+        if (element.offsetParent === null) break;
+        element = element.offsetParent;
+    }
+    maxX = minX + solutionContainer.offsetWidth
+    maxY = minY + solutionContainer.offsetHeight
+
+    if (e.clientX > minX && e.clientY > minY && e.clientX < maxX && e.clientY < maxY) {
+        solutionContainer.classList.add('hover')
+    }
+    selectorContainer.addEventListener('transitionend', function() {
         this.remove()
-        // if (!this.classList.contains('shown')) true
+        solutionContainer.classList.remove('hover')
+        let activeCube = document.querySelector('.cube.active')
+        activeCube.classList.remove('active')
     })
     solutionContainer.classList.remove('active')
     selectorContainer.classList.remove('shown')
@@ -605,13 +969,17 @@ function hideSelector(e) {
     header.classList.remove('dark')
     keyboardContainer.classList.remove('dark')
     variationsArrowBox.parentElement.classList.remove('dark') // REMOVE
-}
+};
 
 function select(e) {e.stopPropagation()}
 
 function toggleOrientation(e) {
     let cube = this.parentElement.parentElement.parentElement
     if (cube.classList.contains('square-root') && this.dataset.type === "sideways") {
+        notify(`Input Error!`, 'red', 'bounce', 1000, '40px', '120px')
+        return;
+    }
+    if (cube.classList.contains('divide') && this.dataset.type === "upsidedown") {
         notify(`Input Error!`, 'red', 'bounce', 1000, '40px', '120px')
         return;
     }
@@ -635,96 +1003,313 @@ function submitInput() {
         let rightParenthesis = (arrString.match(/\)/g) || []).length
         if (leftParenthesis !== rightParenthesis) {
             notify('Invalid Input, Check Parenthesis!', 'red', 'bounce', 1600, '', '270px')
-            console.log('Mistmatched Parenthesis'); return;
+            console.log('Mismatched Parenthesis'); return;
         };
 
+        // CALCULATION
+
         function operation(arr) {
-            switch (arr[1]) {
-                case "+":
-                    return (arr[0] + arr[2]);
-                case "−":
-                    return (arr[0] - arr[2]);
-                case "x":
-                    return (arr[0] * arr[2]);
-                case "÷":
-                    return (arr[0] / arr[2]);
-                case "^":
-                    return (arr[0] ** arr[2]);
+            if (arr.length === 1) {
+                return arr[0]
+            } else if (arr.length === 3) {
+                if (typeof arr[0] === 'object' || typeof arr[2] === 'object') {
+                    switch (arr[1]) {
+                        case "+":
+                            return math.add(arr[0], arr[2]);
+                        case "−":
+                            return math.subtract(arr[0], arr[2]);
+                        case "x":
+                            return math.multiply(arr[0], arr[2]);
+                        case "÷":
+                            return math.divide(arr[0], arr[2]);
+                        case "^":
+                            return math.pow(arr[0], arr[2]);
+                    }
+                }
+                switch (arr[1]) {
+                    case "+":
+                        return (arr[0] + arr[2]);
+                    case "−":
+                        return (arr[0] - arr[2]);
+                    case "x":
+                        return (arr[0] * arr[2]);
+                    case "÷":
+                        return (arr[0] / arr[2]);
+                    case "^":
+                    case "*":
+                        return (arr[0] ** arr[2]);
+                    case "l": return (Math.log(arr[0]) / Math.log(arr[2]))
+                }
+            } else if (arr.length > 3) {
+                return operation([operation(arr.slice(0, 3)), arr[3], ...arr.slice(4, arr.length)])
             }
         };
-        function isNumber(val) {
-            if (val % 1 === 0) return "real"
-            if (true && val === "^") return "numop"
-            if (true && val === "√") return "numop"
-            if (puzzleData.variations.get('base') > 10 && val === "^") return "numop"
-            if (puzzleData.variations.get('base') > 11 && val === "√") return "numop"
-            if (val < 0) return "negative"
-            if (typeof val === "string") return "operation"
-            if (val % 1 !== 0) return "fraction"
-            return "UNKNOWN"
-        }
         
         function evaluate(input) {
-            // console.log(input)
-            let arr = [];
+    
+            // console.groupCollapsed("EVALUATE")
+            
+            let inputsArr = [input.slice()];
+            let returnArr = []
+    
+            function addPermutation(index, char, replace) {
+                if (inputsArr.length > 50) return;
+                if (replace) {
+                    for (let arr of inputsArr) arr[index] = char;
+                } else {
+                    for (let arr of inputsArr.slice('')) {
+                        newArr = arr.slice('');
+                        newArr[index] = char;
+                        inputsArr.push(newArr);
+                    };
+                };
+            };
+    
+            function checkValidity(arr) {
+                let string = arr.map(val => {
+                    if (number(val).includes('natural')) return 'n'
+                    if (number(val).includes('fraction')) return 'f'
+                    if (number(val).includes('negative')) return '-'
+                    if (number(val).includes('complex')) return 'i'
+                    return val
+                }).join("")
+                // .replace(/[!]/g, '')
+                if (!/[f][fnjk]|[fnjk][f]|[fnjk]{3,}|([+−x÷l^]){2,}|√[+−x÷l^]|#[+−x÷l^]|[fnjk]#|^[x^]/.test(string)) return true;
+                return false;
+            }
+            
             for (let i = 0; i < input.length; i++) {
-                function pushNumber(index) {
-                    // console.log("I")
-                    // console.log(goalArr[index])
-                    // console.log(goalArr[index + 1])
-                    if (index === input.length - 1) return input[index];
-                    if (isNumber(input[index + 1]) !== "real") return input[index];
-                    i++
-                    if (typeof input[index + 2] === "number") throw "TRIPLE DIGIT"
-                    let base = puzzleData.variations.get('base') ?? 10
-                    return parseInt(`${input[index]}${input[index + 1]}`, base)
+                let replace = (i === input.length - 1)
+                if (input[i] === '^' && puzzleData.variations.get('base') >= 11) {
+                    addPermutation(i, 'j', replace);
+                } else if (input[i] === '√' && puzzleData.variations.get('base') >= 12) {
+                    addPermutation(i, 'k', replace);
+                } else if (input[i] === 'x' && puzzleData.variations.get('numberOfFactors')) {
+                    addPermutation(i, '#');
                 }
-                if (input[i] === "√") {
-                    i++
-                    let subsequentVal = pushNumber(i)
-                    console.log(subsequentVal)
-                    arr.push(Math.sqrt(subsequentVal))
-                } else if (typeof input[i] === "number") {
-                    arr.push(pushNumber(i))
-                } else {
-                    arr.push(input[i])
+                for (let j = 0; j < inputsArr.length; j++) {
+                    if (!checkValidity(inputsArr[j].slice(0, i + 1))) {
+                        inputsArr = inputsArr.slice(0, j).concat(inputsArr.slice(j + 1));
+                        j--
+                    };
                 };
             };
-            // console.log(arr)
-            // throw "STOP"
-            if (arr.length === 1) {
+    
+            console.log(input)
+            console.log(inputsArr)
+    
+            function number(val) {
+                let arr = []
+                if (typeof val === 'number' || val === 'j' || val === 'k') {
+                    arr.push('number', 'complex')
+                    if (val % 1 === 0 || val === 'j' || val === 'k') return ['number','natural','complex']
+                    if (val < 0) arr.push('negative')
+                    if (val % 1 !== 0) arr.push('fraction')
+                } else if (typeof val === "string") {
+                    arr.push('operation')
+                    if (val === "√") arr.push('root')
+                } else if (typeof val === 'object') {
+                    arr.push('complex')
+                }
                 return arr
-            } else if (arr.length == 3) {
-                return operation([arr[0], arr[1], arr[2]]);
-            } else if (arr.length > 3) {
-                return evaluate([operation(arr.slice(0, 3)), arr[3], ...arr.slice(4, arr.length)])
+            }
+    
+            function numFactors(num) {
+                let length = 0, arr = [];
+            
+                function generateDivisors(curIndex, curDivisor, arr) {
+                    if (curIndex == arr.length) {
+                        length++;
+                        return;
+                    }
+                    for (let i = 0; i <= arr[curIndex][0]; i++) {
+                        generateDivisors(curIndex + 1, curDivisor, arr);
+                        curDivisor *= arr[curIndex][1];
+                    }
+                }
+            
+                for (let i = 2; i * i <= num; i++) {
+                    if (num % i == 0) {
+                        let count = 0;
+                        while (num % i == 0) {
+                            num /= i;
+                            count += 1;
+                        }
+                        arr.push([count, i]);
+                    }
+                }
+                if (num > 1) arr.push([ 1, num ]);
+                let curIndex = 0, curDivisor = 1;
+            
+                generateDivisors(curIndex, curDivisor, arr);
+                return length;
             };
+    
+            function factorial(num) {
+                if (num < 0 || num % 1 !== 0) return 'Invalid Factorial'
+                let factorial = 1;
+                for (let i = num; i > 0; i--, num--) factorial *= num
+                return factorial
+            };
+    
+            if (!inputsArr.length) throw "No possible interpretations"
+            for (let i = 0; i < inputsArr.length; i++) {
+                let arr = []
+                for (let j = 0; j < inputsArr[i].length; j++) {
+    
+                    function pushNumber(input, index) {
+                        if (inputsArr[i][index] === '√') {
+                            j++
+                            return Math.sqrt(pushNumber(input, j))
+                        }
+                        if (inputsArr[i][index] === 'i') {
+                            j++
+                            return math.multiply(math.complex(0, 1), pushNumber(input, j))
+                        }
+                        if (index === input.length - 1) return base10(input[index]);
+                        if (!number(input[index + 1]).includes("natural")) return base10(input[index]);
+                        j++
+                        let base = puzzleData.variations.get('base') ?? 10
+                        return base10(input[index]) * base + base10(input[index + 1])
+                    }
+    
+                    if (inputsArr[i][j] === '√') {
+                        let index = (number(inputsArr[i][j - 1]).includes('number')) ? arr.pop() : 2
+                        console.log(index)
+                        j++
+                        let subsequentVal = pushNumber(inputsArr[i], j)
+                        arr.push(Math.pow(subsequentVal, 1/index));
+                    } else if (inputsArr[i][j] === '#') {
+                        j++
+                        let subsequentVal = pushNumber(inputsArr[i], j)
+                        arr.push(numFactors(subsequentVal));
+                    } else if (inputsArr[i][j] === '!') {
+                        let previousVal = arr[arr.length - 1]
+                        arr[arr.length - 1] = factorial(previousVal)
+                    } else if (inputsArr[i][j] === 'i') {
+                        let previousVal = (number(arr[arr.length - 1]).includes('complex')) ? arr.pop() : 1
+                        let subsequentVal = 1
+                        if (number(inputsArr[i][j + 1]).includes('complex')) {
+                            j++
+                            subsequentVal = pushNumber(inputsArr[i], j)
+                        }
+                        arr.push(math.multiply(previousVal, math.complex(0, 1), subsequentVal))
+                    } else if (number(inputsArr[i][j]).includes("natural")) {
+                        arr.push(pushNumber(inputsArr[i], j))
+                    } else {
+                        arr.push(inputsArr[i][j])
+                    };
+                };
+                console.log(arr)
+                console.log(operation(arr))
+                let answer = operation(arr)
+                if (answer === undefined || answer === NaN) {
+                    console.log("INVALID INTERPRETATION")
+                    console.log(answer);
+                    continue;
+                }
+                returnArr.push([operation(arr), inputsArr[i]])
+            };
+    
+            console.log(returnArr)
+            console.groupEnd()
+            return returnArr;
+            
         };
+    
         function parseInput(arr) {
+    
             let index = [0];
-            let returnArr = [];
-            for (let i = 0; i < arr.length; i++) {
-                let currPosition = returnArr
+            let permutationArr = [[[], [[]]]];
+    
+            function navigate(currPosition) {
                 for (let i = 0; i < index.length - 1; i++) currPosition = currPosition[index[i]]
-                if (arr[i] === "(") {
-                    currPosition[index[index.length - 1]] = [];
-                    index.push(0)
-                } else if (arr[i] === ")") {
-                    index.pop()
-                    currPosition = returnArr;
-                    for (let i = 0; i < index.length - 1; i++) currPosition = currPosition[index[i]]
-                    currPosition[index[index.length - 1]] = evaluate(currPosition[index[index.length - 1]].flat())
-                    index[index.length - 1]++
-                } else {
-                    currPosition[index[index.length - 1]] = arr[i];
-                    index[index.length - 1]++
+                return currPosition
+            };
+    
+            for (let i = 0; i < arr.length; i++) {
+                for (let permutation of permutationArr.slice()) {
+                    let currPosition = navigate(permutation[0])
+                    if (arr[i] === "(") {
+                        currPosition[index[index.length - 1]] = [];
+                        if (!permutation[1][index.length]) {
+                            permutation[1].push(clone(permutation[1][index.length - 1]))
+                        }
+                        for (let arr of permutation[1]) {
+                            let currPosition = navigate(arr)
+                            currPosition.push([])
+                        }
+                        index.push(0)
+                    } else if (arr[i] === ")") {
+                        index.pop()
+                        currPosition = permutation[0];
+                        currPosition = navigate(permutation[0])
+                        let evaluation = evaluate(currPosition[index[index.length - 1]])
+                        for (let j = 0; j < evaluation.length; j++) {
+                            let newPermutation;
+                            if (!j) {
+                                currPosition[index[index.length - 1]] = evaluation[j][0]
+                            } else {
+                                newPermutation = clone(permutation);
+                                currPosition = navigate(newPermutation[0])
+                                currPosition[index[index.length - 1]] = evaluation[j][0];
+                                permutationArr.push(newPermutation);
+                            };
+                            for (let k = 0; k < permutation[1].length; k++) {
+                                let currPosition;
+                                if (!j) {
+                                    currPosition = navigate(permutation[1][k])
+                                } else {
+                                    currPosition = navigate(newPermutation[1][k])
+                                }
+                                if (k >= index.length) {
+                                    let newArr = currPosition[index[index.length - 1]]
+                                    for (let l = 0; l < newArr.length; l++) {
+                                        if (newArr[l] === 'placeholder') newArr[l] = evaluation[j][1][l]
+                                    }
+                                } else {
+                                    currPosition[index[index.length - 1]] = evaluation[j][0]
+                                }
+                            }
+                        };
+                        index[index.length - 1]++
+                    } else {
+                        currPosition[index[index.length - 1]] = arr[i];
+                        for (let arr of permutation[1]) {
+                            let currPosition = navigate(arr)
+                            currPosition.push('placeholder')
+                        }
+                        index[index.length - 1]++
+                    };
                 };
             };
-            // console.log(returnArr)
-            // console.log(returnArr.flat())
-            return evaluate(returnArr.flat());
+            let returnArr = []
+            console.log(permutationArr)
+            for (let arr of permutationArr) {
+                let evaluation = evaluate(arr[0])
+                for (let i = 0; i < evaluation.length; i++) {
+                    for (let flag of arr[1]) {
+                        for (let j = 0; j < flag.length; j++) {
+                            if (flag[j] === 'placeholder') flag[j] = evaluation[i][1][j];
+                        }
+                    }
+                    returnArr.push([evaluation[i][0], arr[1]])
+                }
+            }
+            console.log(returnArr)
+            return returnArr;
         };
-        // console.log(parseInput([1, "x", "√", 2, 5, "/", 5]))
+    
+        // let puzzleData = {variations: new Map([['base', 12], ['numberOfFactors', true]])}
+        // // −÷√
+        // let input = '2iii5+5'.split("")
+        // // let input = ['√', '9']
+        // for (let i = 0; i < input.length; i++) {
+        //     if (!isNaN(parseFloat(input[i]))) input[i] = parseFloat(input[i])
+        // };
+        // // console.log(parseInput(input))
+        // let answer = parseInput(input)
+        // // console.log(math.equal(answer[0][0], math.complex(-119, 120)))
 
         let toParseArr = []
         for (let cube of nodes) {
@@ -733,70 +1318,50 @@ function submitInput() {
             if (typeof newVal === "number") {
                 if (cube.classList.contains('upsidedown')) newVal *= -1
                 if (cube.classList.contains('sideways')) newVal = 1 / newVal
+            } else {
+                if (cube.classList.contains('sideways') && cube.classList.contains('divide')) newVal = 'l'
+                if (cube.classList.contains('sideways') && cube.classList.contains('subtract')) newVal = 'i'
             }
             toParseArr.push(newVal)
         }
         console.log(toParseArr)
-        let answer = parseInput(toParseArr)
-        console.log(answer)
+        let answerArr = parseInput(toParseArr)
 
-        // DISPLAYING ANSWER
-        newAnswer.innerHTML = ''
-        // HEADER
-
-        const answerHeader = document.createElement('div')
-        answerHeader.id = 'answer-header'
-        const backButton = document.createElement('div')
-        backButton.addEventListener('click', () => {answerBackground.click()})
-        const newPuzzleButton = document.createElement('div')
-        newPuzzleButton.addEventListener('click', () => {
-            newPuzzle(queuedPuzzleData)
-            answerBackground.click()
-        })
-        backButton.classList.add('answer-button')
-        newPuzzleButton.classList.add('answer-button')
-        backButton.innerText = 'Back'
-        newPuzzleButton.innerText = 'Next'
-        newPuzzleButton.style.marginLeft = 'auto'
-        backButton.style.cssText = ''
-        answerHeader.append(backButton)
-        answerHeader.append(newPuzzleButton)
-        newAnswer.append(answerHeader)
-
-        // CONTENT
-        const answerContent = document.createElement('div')
-        answerContent.id = 'answer-content'
-
-        // RESULT
-        const inputResult = document.createElement('div')
-        inputResult.id = 'input-result'
-
-        const resultTitle = document.createElement('h2')
-        const resultParagraph = document.createElement('p');
-
+        let title, paragraph = '', answer;
         (function checkInput() {
 
-            resultTitle.innerText = 'Incorrect:'
-            let correctAnswer = false;
+            title = 'Incorrect:'
 
-            if (puzzleData.variations.get('multipleOf')) {
-                for (let goal of puzzleData.goalModValues) {
-                    if (math.equal(goal, answer % puzzleData.variations.get('multipleOf'))) {
-                        correctAnswer = true;
+            console.log(answerArr)
+            let goalArr = puzzleData.variations.get('multipleOf') ? puzzleData.goalModValues : puzzleData.goalValues
+            let deltaMap = new Map();
+            for (let val of answerArr) {
+                if (answer) break;
+                let value = (puzzleData.variations.get('multipleOf')) ? val[0] % puzzleData.variations.get('multipleOf') : val[0]
+                let delta;
+                for (let goal of goalArr) {
+                    if (typeof goal === 'BigInt') continue;
+                    if (math.equal(goal, value)) {
+                        answer = val
+                        break;
+                    } else {
+                        let difference = math.abs(math.subtract(goal, value))
+                        if (difference < delta || !delta) delta = difference
                     }
                 }
-            } else {
-                for (let goal of puzzleData.goalValues) {
-                    if (math.equal(goal, answer)) {
-                        correctAnswer = true;
-                    }
-                }
+                deltaMap.set(delta, val)
             }
+            console.log(deltaMap)
 
-            if (!correctAnswer) {
-                resultParagraph.innerText = `Solution does not evaluate to goal.`
+            if (!answer) {
+                paragraph = `Solution does not evaluate to goal.`
+                let minDelta = Array.from(deltaMap.keys()).sort((a, b) => a - b)[0]
+                console.log(deltaMap.keys())
+                answer = deltaMap.get(minDelta)
                 return;
             }
+
+            // throw "STOP"
 
             function altCalcScore(inputArr) {
                 let score = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -852,7 +1417,7 @@ function submitInput() {
             //         let curr = inputScore[j]
             //         if (curr < min) {
             //             console.log(i)
-            //             resultParagraph.innerText = `Required cubes missing from Solution.`
+            //             paragraph = `Required cubes missing from Solution.`
             //             return;
             //         };
     
@@ -880,23 +1445,89 @@ function submitInput() {
             //                 case 7: extraCube = '"Not"'
             //             }
             //             if (max === 0) {
-            //                 resultParagraph.innerText = `Resources does not contain a ${extraCube} cube.`
+            //                 paragraph = `Resources does not contain a ${extraCube} cube.`
             //                 return;
             //             } else {
-            //                 resultParagraph.innerText = `${i % 2 == 0 ? 'Set Name' : 'Restriction'} has too many ${extraCube} cubes.`
+            //                 paragraph = `${i % 2 == 0 ? 'Set Name' : 'Restriction'} has too many ${extraCube} cubes.`
             //                 return;
             //             };
             //         };
             //     };
             // };
-            resultTitle.innerText = 'Correct'
-            inputResult.style.backgroundColor = 'rgba(92, 255, 80, 0.518)';
-
+            title = 'Correct'
         })();
+
+        // DISPLAYING ANSWER
+        newAnswer.innerHTML = ''
+        // HEADER
+
+        const answerHeader = document.createElement('div')
+        answerHeader.id = 'answer-header'
+        const backButton = document.createElement('div')
+        backButton.addEventListener('click', () => {answerBackground.click()})
+        const newPuzzleButton = document.createElement('div')
+        newPuzzleButton.addEventListener('click', () => {
+            newPuzzle(queuedPuzzleData)
+            answerBackground.click()
+        })
+        backButton.classList.add('answer-button')
+        newPuzzleButton.classList.add('answer-button')
+        backButton.innerText = 'Back'
+        newPuzzleButton.innerText = 'Next'
+        newPuzzleButton.style.marginLeft = 'auto'
+        backButton.style.cssText = ''
+        answerHeader.append(backButton)
+        answerHeader.append(newPuzzleButton)
+        newAnswer.append(answerHeader)
+
+        // CONTENT
+        const answerContent = document.createElement('div')
+        answerContent.id = 'answer-content'
+
+        // RESULT
+        const inputResult = document.createElement('div')
+        inputResult.id = 'input-result'
+        if (title === 'Correct') inputResult.classList.add('correct')
+
+        const resultTitle = document.createElement('h2')
+        const resultParagraph = document.createElement('p');
+        resultTitle.innerText = title
+        resultParagraph.innerText = paragraph
 
         inputResult.append(resultTitle)
         inputResult.append(resultParagraph)
         answerContent.append(inputResult)
+
+        // GOAL
+        const goalTitle = document.createElement('h2')
+        goalTitle.innerText = 'Goal'
+        goalTitle.id = 'goal-title'
+        answerContent.append(goalTitle)
+
+        const goalParagraph = (puzzleData.variations.get('multipleOf')) ? `Goal reduces down to:` : `Goal is equal to:`
+        const goalList = document.createElement('ul')
+        goalList.id = 'goal-list'
+        goalList.style.cssText = 'display: flex; justify-content: center; flex-direction: column; text-align: left;'
+
+
+        let goalArr = puzzleData.variations.get('multipleOf') ? puzzleData.goalModValues : puzzleData.goalValues
+        goalArr = goalArr.sort((a, b) => 
+            {if (a.toString().length < b.toString().length) return -1}
+        )
+        console.log(goalArr)
+        for (let goal of goalArr) {
+            const goalValue = document.createElement('li')
+            goalValue.innerText = goal
+            goalValue.style.cssText = 'text-align: left'
+            goalList.append(goalValue)
+        }
+
+        answerContent.append(goalParagraph)
+        answerContent.append(goalList)
+
+        const goalHorizontalRule = document.createElement('hr')
+        goalHorizontalRule.style.width = '86%'
+        answerContent.append(goalHorizontalRule)
 
         // TITLE
         const titleNode = document.createElement('h2')
@@ -910,14 +1541,125 @@ function submitInput() {
         inputSolutionContainer.append(inputAnswer)
         answerContent.append(inputSolutionContainer)
 
+        // PARAGRAPH
         const evaluationParagraph = document.createElement('p')
-        evaluationParagraph.innerText = `Your solution evaluates to ${answer}`
+        evaluationParagraph.innerText = `Your solution evaluates to ${answer[0]}`
+        evaluationParagraph.classList.add('evaluation-paragraph')
         answerContent.append(evaluationParagraph)
 
+        // INPUT BREAKDOWN
+        const breakdownContainer = document.createElement('div')
+        const breakdownContent = document.createElement('div')
+        breakdownContainer.id = 'breakdown-container'
+        breakdownContent.id = 'breakdown-content'
+        console.log(answer[1])
+        let breakdownHeight1 = 0
+        for (let i = answer[1].length - 1; i >= -1; i--) {
+            breakdownHeight1 += 38.4
+            const level = document.createElement('p')
+            let arr = answer[1][i]
+
+            let string = ''
+            console.log(arr)
+            function stringify(arr) {
+                for (let j = 0; j < arr.length; j++) {
+                    function pushNumber(input, index) {
+                        if (index === input.length - 1) return base10(input[index]);
+                        if (typeof input[index + 1] !== 'number') return base10(input[index]);
+                        j++
+                        let base = puzzleData.variations.get('base') ?? 10
+                        return base10(input[index]) * base + base10(input[index + 1])
+                    }
+        
+                    if (typeof arr[j] === 'number' || arr[j] === 'k' || arr[j] === 'j') {
+                        string += (pushNumber(arr, j))
+                    } else if (Array.isArray(arr[j])) {
+                        string += "("
+                        stringify(arr[j])
+                        string += ")"
+                    } else {
+                        switch (arr[j]) {
+                            case "l": string += 'log'; break;
+                            case "#": string += 'x'; break;
+                            default: string += arr[j]; break;
+                        }
+                    };
+                }
+            }
+            if (i > -1) {
+                stringify(arr)
+            } else {
+                string = answer[0]
+            }
+            level.innerText = string
+            breakdownContent.append(level)
+        }
+        breakdownContainer.append(breakdownContent)
+        answerContent.append(breakdownContainer)
+
         // SEPARATE ANSWER
+        const inputSeparatorDiv = document.createElement('div')
         const horizontalRule = document.createElement('hr')
-        horizontalRule.style.cssText = 'width: 80%;'
-        answerContent.append(horizontalRule)
+        inputSeparatorDiv.id = 'separator-div'
+        horizontalRule.style.cssText = 'width: 100%;'
+        inputSeparatorDiv.append(horizontalRule)
+        answerContent.append(inputSeparatorDiv)
+
+        // BREAKDOWN BUTTON
+        const breakdownButton = document.createElement('div')
+        const breakdownButtonLabel = document.createElement('p')
+        breakdownButton.id = 'breakdown-button'
+        breakdownButtonLabel.innerText = 'Show Breakdown'
+        breakdownButton.append(breakdownButtonLabel)
+
+        const arrowSvg =  document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        arrowSvg.setAttribute('viewBox', "0 0 24 24")
+        arrowSvg.setAttribute('fill', "currentColor")
+        arrowSvg.style.cssText = 'width: 14px; height: 14px; margin-left: 4px;'
+        arrowSvg.innerHTML = '<path fill-rule="evenodd" d="M4.929 7.913l7.078 7.057 7.064-7.057a1 1 0 111.414 1.414l-7.77 7.764a1 1 0 01-1.415 0L3.515 9.328a1 1 0 011.414-1.414z" clip-rule="evenodd"></path>'
+        breakdownButton.append(arrowSvg)
+
+        breakdownButton.addEventListener('click', function() {
+            this.classList.toggle('active')
+            let breakdownHeight
+            if (this.classList.contains('active')) {
+                breakdownButtonLabel.innerText = 'Hide Breakdown'
+                breakdownHeight = breakdownHeight1
+                if (Math.abs(answerContent.scrollHeight - answerContent.scrollTop - answerContent.clientHeight) < 1) {
+                    answerContent.scrollTo({top: answerContent.scrollTop - 1})
+                } 
+                const scrollElement = document.createElement('div')
+                scrollElement.style.cssText = `height: ${breakdownHeight + "px"}; flex-shrink: 0;`
+                answerContent.append(scrollElement)
+                scrollElement.animate(
+                [{height: "0px"}], {
+                    fill: 'forwards',
+                    duration: 450,
+                    easing: 'cubic-bezier(.13,.94,.37,.99)',
+                });
+                breakdownContainer.animate(
+                [{height: breakdownHeight + "px"}], {
+                    fill: 'forwards',
+                    duration: 450,
+                    easing: 'cubic-bezier(.13,.94,.37,.99)',
+                });
+                let height = breakdownContent.offsetTop
+                setTimeout(function () {answerContent.scrollTo({top: height - 108, behavior: 'smooth'})}, 8)
+                // setTimeout(() => {clearInterval(scrollInterval)}, 750)
+                // setTimeout(function() {breakdownContent.scrollIntoView(true, {behavior: "smooth"})}, 700)
+                // setTimeout(function () {breakdownContent.scrollIntoView({behavior: 'smooth', block: 'start'})}, 0)
+             } else {
+                breakdownButtonLabel.innerText = 'Show Breakdown'
+                breakdownHeight = 0
+                breakdownContainer.animate(
+                [{height: breakdownHeight + "px"}], {
+                    fill: 'forwards',
+                    duration: 450,
+                    easing: 'cubic-bezier(.13,.94,.37,.99)',
+                });
+             }
+        })
+        inputSeparatorDiv.append(breakdownButton)
 
         // DEFINED TITLE
         const titleNode2 = document.createElement('h2')
@@ -980,15 +1722,32 @@ function submitInput() {
         defindSolutionContainer.append(definedAnswer)
         answerContent.append(defindSolutionContainer)
 
+        // PARAGRAPH
+        const solutionParagraph = document.createElement('p')
+        solutionParagraph.innerText = `Solution evaluates to ${puzzleData.solution.solution}`
+        solutionParagraph.classList.add('evaluation-paragraph')
+        answerContent.append(solutionParagraph)
+
+        // SOLUTION BREAKDOWN
+        // const solutionSeparatorDiv = inputSeparatorDiv.cloneNode('deep')
+        // answerContent.append(solutionSeparatorDiv)
 
         newAnswer.append(answerContent)
 
         answerBackground.classList.toggle('shown')
-        console.log("A")
         newAnswer.classList.toggle('shown')
 
+
+        document.addEventListener('keydown', function(keypress){
+            // if (keypress.key !== 'p') return
+
+            // answerContent.scrollTo({top: answerContent.scrollTop - 10})
+            // console.log(answerContent.scrollTop)
+            // console.log(answerContent.scrollHeight)
+            // console.log(answerContent.offsetHeight)
+        });
     } catch (error) {
         console.log(error)
         notify('Invalid input!', 'red', 'bounce', 1500, '', '')
     }
-}
+};
