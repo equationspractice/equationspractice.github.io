@@ -592,11 +592,11 @@ function newPuzzle() {
         //     }
 
         // mainPuzzleWorker.terminate();
-        let string = '1+(5+(5+5))'
-        for (let i = 0; i < string.length; i++) {
-            inputCube(translateName(string.charAt(i)))
-        }
-        submitInput()
+        // let string = '1+(5+(5+5))'
+        // for (let i = 0; i < string.length; i++) {
+        //     inputCube(translateName(string.charAt(i)))
+        // }
+        // submitInput()
 
     };
 };
