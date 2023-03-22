@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cycling Calculator</title>
+    <script src="cycletable.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            overflow-y: scroll;
+            margin: 0;
+        }
+        header {
+            position: relative;
+            /* height: 54px; */
+            height: min(13vw, 54px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* line-height: 50px; */
+            border-bottom: 1px solid grey;
+            transition: 0.25s cubic-bezier(.4,0,.2,1);
+            z-index: 5;
+        }
+        header.dark {
+            background-color: rgb(227, 227, 227);
+        }
+        header h1 {
+            position: relative;
+            top: 2px;
+            font-size: 6.7vw;
+            font-size: min(6.5vw, 1.95em);
+            margin: auto;
+        }
+        #settings-ico {
+            position: absolute;
+            /* height: 34px; */
+            /* width: 34px; */
+            height: min(34px, 6.7vw);
+            width: min(34px, 6.7vw);
+            right: 10px;
+            cursor: pointer;
+            border-radius: 100%;
+            transition: 0.1s;
+        }
+        #settings-ico:hover {
+            transform-origin: 50% 50%;
+            transform: rotate(5deg);
+        }
+        #settings-container {
+            position: absolute;
+            right: 5px;
+            top: 64px;
+            height: 80vh;
+            width: 310px;
+            background-color: rgb(248, 248, 248);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgb(0 0 0 / .3);
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 5;
+        }
+        #settings-container.shown {
+            visibility: visible;
+            opacity: 1;
+        }
+        #settings-container::before {
+            background-color: white;
+            content: "";
+            display: block;
+            transform: rotate(45deg);
+            position: absolute; 
+            right: 12px;
+            top: -5px;
+            width: 15px;
+            height: 15px;
+        }
+        #settings-header {
+            position: relative;
+            font-size: 18px;
+            background-color: white;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            padding: 12px;
+            border-bottom: 1px solid #dadada
+        }
+        #settings-header h4, #settings-nav-button {
+            margin: 0;
+        }
+        #settings-nodes-container {
+            position: relative;
+            display: flex;
+            flex: auto;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+        }
+        #settings-nodes-container > div {
+            margin-top: 8px;
+            background-color: white;
+            width: 100%;
+            height: 48px;
+            line-height: 48px;
+            padding-left: 10px;
+            border-top: 1px solid #dadada;
+            border-bottom: 1px solid #dadada;
+            display: flex;
+            align-items: center;
+            transition: background-color 50ms
+        }
+        #settings-nodes-container p {
+            font-weight: 100;
+            margin: 0;
+        }
+        .toggle-switch {
+            height: 24px;
+            width: 24px;
+            position: absolute;
+            left: 2px;
+            border-radius: 100%;
+            background: linear-gradient(180deg, white, #ededed);
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: rgb(0 0 0 / 75%) 0 0 1px;
+            transition: left 200ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
+        }
+        .toggle.active {background-color: rgb(96, 223, 102);}
+        .toggle.active .toggle-switch {left: 22px;}
+        .toggle {
+            height: 29px;
+            width: 50px;
+            border: 1px solid rgba(0,0,0,0.15);
+            position: absolute;
+            right: 10px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 120ms ease;
+        }
+        .settings-button:hover {
+            background-color: rgb(246, 246, 246) !important;
+            cursor: pointer;
+        }
+        #menu-background{
+            opacity: 0;
+            visibility: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background-color: black;
+            top: 0;
+            transition: 0.25s cubic-bezier(.4,0,.2,1);
+            z-index: 4;
+        }
+        #menu-background.shown {
+            visibility: visible;
+            opacity: 0.1;
+        }
+        #main {
+            visibility: hidden;
+            opacity: 0;
+            min-height: calc(100vh - min(13vw, 54px));
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding-bottom: 60px;
+        }
+        #main.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        p {
+            font-weight: 700;
+            margin: 0 auto
+        }
+        #directions {
+            text-align: center;
+            margin: 30px 0 0 0;
+        }
+        #input-div {
+            height: 50px;
+            width: 300px;
+            margin: 10px auto;
+            display: flex;
+            box-shadow: 0 3px 8px rgb(0 0 0 / 20%);
+            border-radius: 5px;
+            position: relative;
+        }
+        #mod {
+            height: 50px;
+            width: 50px;
+            border: 1px solid rgb(0 0 0 / 20%);
+            border-right: 0;
+            border-radius: 5px 0 0 5px;
+            display: flex;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            user-select: none;
+            transition: ease 0.1s;
+            z-index: 1;
+            background-color: white;
+            cursor: pointer;
+        }
+        #mod:hover, #mod.expand {
+            background-color: rgb(245, 245, 245);
+        }
+        #input-div input {
+            height: 50px;
+            width: 250px;
+            border-radius: 0 5px 5px 0;
+            font-size: 30px;
+            border: 1px solid rgb(0 0 0 / 20%);
+            text-align: center;
+            transition: ease 0.2s;
+        }
+        input:focus{
+            border: 1px solid rgb(0 0 0 / 33%);
+            outline: none;
+            background-color: rgb(248, 248, 248);
+        }
+        #submit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0px solid black;
+            background-color: white;
+            font-weight: 600;
+            font-size: 20px;
+            width: 200px;
+            height: 40px;
+            margin: 10px auto;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 3px 8px rgb(0 0 0 / 20%);
+            transition: background-color ease 0.1s, height ease 0.4s, width ease 0.4s;
+            user-select: none;
+            padding: 5px 3px;
+        }
+        #submit:not(.expand):hover {
+            cursor: pointer;
+            background-color: rgb(248, 248, 248);
+        }
+        #submit:not(.expand):active {
+            background-color: rgb(245, 245, 245);
+        }
+        .mod-picker-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex-basis: 0;
+            flex-grow: 1;
+            box-shadow: 0 2px 3px rgb(0 0 0 / 20%);
+            border-radius: 8px;
+            margin: 5px 3px;
+            background-color: rgb(250, 250, 250);
+            transition: background-color 0.1s ease, opacity 0.1s ease;
+            opacity: 0;
+            z-index: 1;
+            cursor: pointer;
+        }
+        .mod-picker-button:not(:last-of-type):hover {
+            cursor: pointer;
+            background-color: rgb(245, 245, 245);;
+        }
+        .mod-picker-button:last-of-type {
+            display: flex;
+            padding: 4px;
+        }
+        .mod-picker-button input {
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 40px;
+            height: 34px;
+            border: 1px solid rgb(0 0 0 / 20%);
+            transition: ease 0.2s;
+            text-align: center
+        }
+        .mod-picker-button input:focus{
+            border: 1px solid rgb(0 0 0 / 33%);
+            outline: none;
+            background-color: rgb(248, 248, 248);
+        }
+        #answer {
+            margin-bottom: 20px;
+            opacity: 0;
+            transition: opacity 640ms ease;
+        }
+        #answer.show {
+            opacity: 1;
+        }
+        #answer-container {
+            display: flex;
+            width: 80%;
+            margin: auto;
+            margin-top: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+        .answer-toggle-container {
+            z-index: 1;
+            display: flex;
+            position: relative;
+            justify-content: space-between;
+            cursor: pointer;
+            border-radius: 6px;
+            height: 26px;
+            width: 194px;
+            background-color:rgb(235, 235, 235);
+            margin: 15px;
+            box-shadow: 0 1px 7px rgb(0 0 0 / 15%);
+            user-select: none;
+            opacity: 0;
+            transition: opacity 640ms ease
+        }
+        .answer-toggle-container.show {
+            opacity: 1
+        }
+        .answer-left-toggle, .answer-right-toggle {
+            font-size: 14px;
+            height: inherit;
+            line-height: 26px;
+            text-align: center;
+            z-index: 8;
+            width: 95px;
+        }
+        .answer-toggle-div {
+            position: absolute;
+            height: inherit;
+            width: 95px;
+            left: 0;
+            border-radius: 6px;
+            background-color: rgb(220, 220, 220);
+            transition: cubic-bezier(0.785, 0.135, 0.15, 0.86) 0.14s left;
+        }
+        .answer-toggle-div.move {left: calc(100% - 95px);}
+        #method > p:first-child {
+            margin-top: 18px;
+        } 
+        #method > p {
+            opacity: 0;
+            translate: 0 10px;
+            transition: opacity 640ms ease, translate 310ms ease;
+        }
+        #method > p.show {
+            opacity: 1;
+            translate: 0;
+        }
+        #tablediv-container {
+            text-align: center;
+            background-color: white;
+        }
+        #table {
+            width: 100%;
+            height: calc(100vh - min(13vw, 54px));
+            background-color: white;
+            position: absolute;
+            top: min(13vw, 54px);
+            z-index: 2;
+            opacity: 0;
+            transition: 350ms ease;
+            visibility: hidden;
+        }
+        #table.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        #tablediv {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .table-container {
+            margin: 14px 40px;
+        }
+        .table-container h3 {
+            text-align: center;
+            margin: 5px 0;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        .horizontal-header {
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            height: 30px;
+            width: 30px;
+        }
+        .horizontal-header:first-child {
+            border: none;
+        }
+        .vertical-header {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            height: 30px;
+            width: 30px;
+        }
+        .table-data {
+            border: 1px solid black;
+            text-align: center;
+        }
+        .col0 {
+            background-color: rgb(132, 255, 255);
+        }
+        .col1 {
+            background-color: rgb(130, 253, 228);
+            /* background-color: rgb(132, 255, 255); */
+        }
+        .col2 {
+            background-color: rgb(119, 255, 137);
+        }
+        .col3 {
+            background-color: rgb(129, 255, 70);
+        }
+        .col4 {
+            background-color: rgb(193, 255, 70);
+        }
+        .col5 {
+            background-color: rgb(249, 255, 61);
+        }
+        .col6 {
+            background-color: rgb(255, 227, 70);
+        }
+        .col7 {
+            background-color: rgb(255, 216, 73);
+        }
+        .col8 {
+            background-color: rgb(255, 173, 73);
+        }
+        .col9 {
+            background-color: rgb(255, 112, 73);
+        }
+    </style>
+</head>
+<body>
+
+    
+    <header>
+        <h1>CYCLING CALCULATOR</h1>
+        <svg id="settings-ico" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.34791"
+            d="m 21.019503,10.033625 c 2.061465,0.500105 2.061465,3.432646 0,3.932752 a 2.0238998,2.0238998 0 0 0 -1.251438,3.020587 c 1.103519,1.811414 -0.969688,3.885794 -2.782274,2.782275 a 2.0238998,2.0238998 0 0 0 -3.019416,1.250264 c -0.500105,2.061465 -3.432646,2.061465 -3.932752,0 A 2.0238998,2.0238998 0 0 0 7.0130359,19.768066 C 5.2016221,20.871584 3.1272422,18.798378 4.2307606,16.985791 A 2.0238998,2.0238998 0 0 0 2.9804977,13.966377 c -2.06146654,-0.500106 -2.06146654,-3.432647 0,-3.932752 A 2.0238998,2.0238998 0 0 0 4.2319346,7.0130359 C 3.1284161,5.2016222 5.2016221,3.1272423 7.0142099,4.2307607 A 2.0238998,2.0238998 0 0 0 10.033623,2.9804978 c 0.500106,-2.06146641 3.432647,-2.06146641 3.932752,0 a 2.0238998,2.0238998 0 0 0 3.020589,1.2514369 c 1.811413,-1.1035184 3.885794,0.9696875 2.782275,2.7822753 -0.713765,1.1692598 -0.08217,2.6954023 1.250264,3.019415 z"
+            id="path127" />
+            <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.34791"
+            d="m 15.521867,11.99822 a 3.5218678,3.5218678 0 1 1 -7.0437347,0 3.5218678,3.5218678 0 0 1 7.0437347,0 z"
+            id="path129" />
+        </svg>
+        <div id="settings-container">
+            <div id="settings-header">
+                <h4>Settings</h4>
+            </div>
+            <div id="settings-nodes-container">
+                <div class="settings-toggle">
+                    <p>Reduce animations</p>
+                    <div id="force-symmetric-difference" class="toggle" data-type="force-symmetric-difference">
+                        <div class="toggle-switch"></div>
+                    </div>
+                </div>
+                <div class="settings-button">
+                    <p>Cycle Lengths Table</p>
+                </div>
+            </div>
+    </header>
+    <section id="main" class="active">
+        <p id="directions">Input an expression to find its modulo</p>
+        <div id="input-div">
+            <div id="mod">
+                <p>11</p>
+            </div>
+            <input id="input" maxlength="30">
+        </div>
+        <div id="submit">
+            <p style="position: absolute;">ENTER</p>
+            <div class="mod-picker-button" data-select="6">6</div>
+            <div class="mod-picker-button" data-select="7">7</div>
+            <div class="mod-picker-button" data-select="8">8</div>
+            <div class="mod-picker-button" data-select="9">9</div>
+            <div class="mod-picker-button" data-select="10">10</div>
+            <div class="mod-picker-button" data-select="11">11</div>
+            <div class="mod-picker-button" data-select="choose"><input id="mod-input" maxlength="3"></div>
+        </div>
+        <div id="answer-container" style="margin-bottom: 20px"></div>
+    </section>
+    <section id="table">
+
+    </section>
+    <script>
+        
+        const input = document.querySelector('#input')
+        const answerContainer = document.querySelector('#answer-container')
+        const submitButton = document.querySelector('#submit')
+        submitButton.addEventListener('click', submitinput)
+
+        function submitinput(e) {
+            e.stopPropagation()
+            
+            if (submitButton.classList.contains('expand')) {
+                if (!e.target.dataset.select) return;
+                let newVal;
+                if (e.target.dataset.select !== 'choose') {
+                    newVal = e.target.dataset.select
+                } else {
+                    newVal = modInput.value
+                }
+                if (!newVal) return;
+                if (newVal < 2) return;
+                modVal.click()
+                modContainer.animate(
+                    [
+                    {backgroundColor: 'rgb(245, 245, 245)', easing: 'ease'},
+                    {backgroundColor: 'white', easing: 'ease'}],
+                    {duration: 100}
+                )
+                if (newVal === modVal.innerText) return;
+                modVal.animate(
+                    [{opacity: '0', easing: 'ease'}], {
+                        fill: 'forwards',
+                        duration: 200,
+                });
+                setTimeout(() => {
+                    modVal.innerText = parseInt(newVal)
+                    modVal.animate(
+                        [{opacity: '1', easing: 'ease'}], {
+                            fill: 'forwards',
+                            duration: 200,
+                    });
+                }, 250)
+                return;
+            }
+
+            function fadeMethod() {
+                const element = document.querySelector('#method > p:not(.show)')
+                if (!element) return;
+                setTimeout(function(){
+                    element.classList.add('show')
+                    fadeMethod()
+                }, 60 * fadeDelay)
+            }
+
+            answerContainer.innerHTML = ''
+
+            const answer = document.createElement('p')
+            answer.id = 'answer'
+            answerContainer.append(answer)
+
+            let inputVal = input.value;
+            let mod = parseFloat(modVal.innerText)
+            
+            try {
+
+                if (!inputVal.length) throw 'Input a value'
+
+                inputArr = []
+                for (let i = 0; i < inputVal.length; i++) {
+                    function pushNumber(index) {
+                        if (index < inputVal.length - 1) {
+                        if (/[\+\-*/^]/.test(inputVal[index + 1])) {
+                                return inputVal[index];
+                            }
+                        } else {
+                            return inputVal[index];
+                        }
+                        i++
+                        return inputVal[index].concat(pushNumber(index + 1))
+                    }
+
+                    if (/[\d]/.test(inputVal[i])) {
+                        inputArr.push(pushNumber(i))
+                    } else {
+                        if (!/[\d]/.test(inputVal[i - 1])) throw "Invalid Expression"
+                        inputArr.push(inputVal[i])
+                    }
+                }
+                
+                console.log(inputVal);
+                console.log(inputArr);
+
+                let cycleType;
+                if (inputArr[1] !== "^") throw "Invalid Expression"
+                if (inputArr.length === 3) cycleType = 'normal'
+                if (inputArr.length === 5 && inputArr[3] === "^") cycleType = 'double'
+                if (inputArr.length === 5 && inputArr[3] === "/") cycleType = 'division'
+                if (!cycleType) throw "Invalid Expression"
+
+                // CREATE TOGGLE
+                const answerToggleContainer = document.createElement('div');
+                answerToggleContainer.id = 'answer-toggle-container-1'
+                answerToggleContainer.classList.add('answer-toggle-container');
+                const cycleToggle = document.createElement('div');
+                const exponentToggle = document.createElement('div');
+                cycleToggle.classList.add('answer-left-toggle');
+                cycleToggle.innerText = 'Cycling'
+                cycleToggle.dataset.active = 'true'
+                exponentToggle.classList.add('answer-right-toggle');
+                exponentToggle.innerText = 'Squaring'
+                exponentToggle.dataset.active = 'false'
+                const answerToggleDiv = document.createElement('div');
+                answerToggleDiv.classList.add('answer-toggle-div');
+                answerToggleContainer.addEventListener('click', (e) => {
+                    if (e.target.dataset.active === 'true') return
+                    answerToggleDiv.classList.toggle('move')
+                    if (answerToggleDiv.classList.contains('move')) {    // CLICKED ON SECOND TOGGLE
+                        cycleToggle.dataset.active = 'false'
+                        exponentToggle.dataset.active = 'true'
+                        method.innerHTML = squaring.innerHTML
+                        fadeMethod()
+                    } else {    // CLICKED ON FIRST TOGGLE
+                        cycleToggle.dataset.active = 'true'
+                        exponentToggle.dataset.active = 'false'
+                        method.innerHTML = cycling.innerHTML
+                        fadeMethod()
+                    };
+                });
+                answerToggleContainer.append(cycleToggle, exponentToggle, answerToggleDiv);
+                if (cycleType !== 'double') answerContainer.append(answerToggleContainer);
+                const method = document.createElement('div')
+                method.id = 'method'
+                answerContainer.append(method)
+
+                const cycling = document.createElement('div')
+                const squaring = document.createElement('div')
+
+                if (cycleType === 'division') { // INIT DIVISION CYCLING
+                    if (inputArr[4] === "0") throw "Cannot divide by zero"
+                    const initDivision = document.createElement('p')
+                    initDivision.innerText = `(${inputArr[0]}^${inputArr[2]}) / ${inputArr[4]} ≡ (${inputArr[0]}^${inputArr[2]} mod ${inputArr[4] * mod}) / ${inputArr[4]}`
+                    mod = inputArr[4] * mod
+                    cycling.append(initDivision)
+                    squaring.append(initDivision.cloneNode(true))
+                }
+
+                let base = parseFloat(inputArr[0]) % mod
+                let exponent = parseFloat(inputArr[2]);
+                
+                // REDUCE FIRST NUMBER
+
+                if (inputArr[0] != base) {
+                    const initReduction = document.createElement('p')
+                    initReduction.style.marginBottom = "18px"
+                    initReduction.innerText = `${inputArr[0]}^${inputArr[2]} ≡ ${base}${inputArr[1]}${inputArr[2]}`
+                    cycling.append(initReduction)
+                    squaring.append(initReduction.cloneNode(true))                    
+                } else if (cycling.children.length) {
+                    cycling.children[0].style.marginBottom = "18px"
+                    squaring.children[0].style.marginBottom = "18px"
+                }
+                console.log(base)
+                if (base === 0) {
+                    let result = (inputArr[2] === '0') ? 1 : 0
+                    if (inputArr[0] === '0' && inputArr[2] === '0') throw "0^0 is not defined"
+                    const finalAnswer = document.createElement('p')
+                    if (cycleType === 'double') {
+                        if (result && inputArr[4] == 0) result = 0;
+                        finalAnswer.innerText = `${base}${inputArr[1]}(${inputArr[2]}${inputArr[3]}${inputArr[4]}) ≡ ${result}`
+                        answer.innerText = finalAnswer.innerText
+                    } else {
+                        finalAnswer.innerText = `${base}${inputArr[1]}${inputArr[2]} ≡ ${result}`
+                        answer.innerText = `${inputVal} ≡ ${result}`
+                    }
+                    cycling.append(finalAnswer)
+                    squaring.append(finalAnswer.cloneNode(true))
+                    if (cycleType === 'division') { 
+                        const finalAnswerDouble = document.createElement('p')
+                        finalAnswerDouble.innerText = `(${inputArr[0]}^${inputArr[2]}) / ${inputArr[4]} ≡ ${result}`
+                        if (result) finalAnswerDouble.innerText += `/${inputArr[4]}`
+                        answer.innerText = finalAnswerDouble.innerText
+                        cycling.append(finalAnswerDouble)
+                        squaring.append(finalAnswerDouble.cloneNode(true))
+                    }
+                    method.innerHTML = cycling.innerHTML
+                    setTimeout(() => {answer.classList.add('show')}, 150 * fadeDelay)
+                    setTimeout(() => {answerToggleContainer.classList.add('show')}, 250 * fadeDelay)
+                    setTimeout(() => {fadeMethod()}, 400 * fadeDelay)
+                    return;
+                }
+
+                // CYCLING
+                let cycle = 0, valuesArr = [], valuesMap = new Map([[0, 1]]), initExp;
+                for (let i = 1, currVal = 1; i < 1000 && !cycle; i++) {
+                    valuesArr.push(currVal)
+                    const newCycle = document.createElement('p')
+                    newCycle.innerText = `${base}^${i} ≡ ${currVal *= base} ≡ ${currVal %= mod}`
+                    valuesMap.set(i, currVal)
+                    if (currVal === valuesArr[valuesArr.length - 1] && valuesArr.length > 2) {
+                        cycle = "CONTINUOUS"
+                        if (currVal === 0) break;
+                    } else if (valuesArr.includes(currVal)) {
+                        for (let i = valuesArr.length - 1; i >= 0; i--) {
+                            cycle++;
+                            if (valuesArr[i] === currVal) {
+                                initExp = i
+                                break;
+                            }
+                        }
+                        if (currVal !== 1) valuesArr.shift()
+                    };
+                    cycling.append(newCycle)
+                };
+                console.log(cycle)
+
+                // SET CYCLE LENGTH
+
+                const cycleLength = document.createElement('p')
+                cycleLength.innerText = `Cycle length is ${cycle}`
+                if (cycle === 'CONTINUOUS') cycleLength.innerText = `Cycle is continuous`
+                if (cycleType === 'double' && cycle  !== 'CONTINUOUS') {
+                    cycleLength.style.marginTop = "18px"
+                } else {
+                    cycleLength.style.margin = "18px 0"
+                }
+                cycling.append(cycleLength)
+
+                const finalReduction = document.createElement('p')
+                const finalAnswer = document.createElement('p')
+
+                let finalExponent = parseFloat(inputArr[2])
+                if (cycleType === 'double') finalExponent = inputArr[2] ** inputArr[4]
+                let newAnswer = valuesMap.get(finalExponent)
+
+                if (newAnswer === undefined) {
+                    finalExponent -= initExp
+                    finalExponent %= cycle
+                    finalExponent = initExp + finalExponent
+                    newAnswer = valuesMap.get(finalExponent)
+                }
+
+                let doubleFinalExponent // FOR DOUBLE CYCLING
+                if (cycle === 'CONTINUOUS') {
+                    if (cycleType === 'double') {
+                        if (inputArr[2] ** inputArr[4] >= valuesArr.length) {
+                            newAnswer = valuesArr[valuesArr.length - 1]
+                        }
+                        finalReduction.innerText = `${inputArr[0]}^(${inputArr[2]}^${inputArr[4]}) ≡ ${newAnswer}`
+                        answer.innerText = finalReduction.innerText 
+                    } else {
+                        if (inputArr[2] >= valuesArr.length) {
+                            newAnswer = valuesArr[valuesArr.length - 1]
+                        }
+                        finalReduction.innerText = `${base}^${inputArr[2]} ≡ ${newAnswer}`
+                    }
+                    console.log(finalReduction.innerText)
+                    cycling.append(finalReduction)
+                } else if (cycleType !== 'double') {
+                    finalReduction.innerText = `${base}^${inputArr[2]} ≡ ${base}^${finalExponent} ≡ ${newAnswer}`
+                    cycling.append(finalReduction)
+                } else { // DOUBLE CYCLING
+
+                    let base2 = inputArr[2] % cycle
+                    let exponent2 = inputArr[4]
+                    let mod2 = cycle
+
+                    if (base2 === 0) {
+                        let result = (inputArr[4] == '0') ? 1 : 0
+                        if (inputArr[2] === '0' && inputArr[4] === '0') throw "0^0 is not defined"
+                    }
+
+                    const initSecondCycle = document.createElement('p')
+                    initSecondCycle.innerText = `Reduce ${inputArr[2]}^${inputArr[4]} mod ${mod2}`
+                    initSecondCycle.style.marginBottom = '18px'
+                    cycling.append(initSecondCycle)
+
+
+                    if (inputArr[2] != base2) {
+                        const initReduction = document.createElement('p')
+                        initReduction.style.marginBottom = "18px"
+                        initReduction.innerText = `${inputArr[2]}^${exponent2} ≡ ${base2}^${exponent}`
+                        if (base2 === 0) initReduction.innerText += ` ≡ 0`
+                        cycling.append(initReduction)
+                        initReduction.style.margin = '18px'
+                    }
+
+                    let cycle2 = 0, valuesArr2 = [], valuesMap2 = new Map([[0, 1]]), initExp2;
+                    for (let i = 1, currVal = 1; i < 1000 && !cycle2; i++) {
+                        valuesArr2.push(currVal)
+                        const newCycle = document.createElement('p')
+                        newCycle.innerText = `${base2}^${i} ≡ ${currVal *= base2} ≡ ${currVal %= mod2}`
+                        valuesMap2.set(i, currVal)
+                        if (currVal === valuesArr2[valuesArr2.length - 1] && valuesArr2.length > 2) {
+                            cycle2 = "CONTINUOUS"
+                            if (currVal === 0) break;
+                        } else if (valuesArr2.includes(currVal)) {
+                            for (let i = valuesArr2.length - 1; i >= 0; i--) {
+                                cycle2++;
+                                if (valuesArr2[i] === currVal) {
+                                    initExp2 = i
+                                    break;
+                                }
+                            }
+                            if (currVal !== 1) valuesArr2.shift()
+                        };
+                        if (base2 !== 0) cycling.append(newCycle)
+                    };
+                    console.log(cycle2)
+
+                    const cycleLength = document.createElement('p')
+                    cycleLength.innerText = `Cycle length is ${cycle2}`
+                    if (cycle2 === 'CONTINUOUS') cycleLength.innerText = `Cycle is continuous`
+                    cycleLength.style.margin = "18px 0"
+                    if (base2 !== 0) cycling.append(cycleLength)
+
+                    const finalReduction2 = document.createElement('p')
+
+                    let finalExponent2 = parseFloat(exponent2)
+                    let newAnswer2 = valuesMap2.get(finalExponent2)
+
+                    if (newAnswer2 === undefined) {
+                        finalExponent2 -= initExp2
+                        finalExponent2 %= cycle2
+                        finalExponent2 = initExp2 + finalExponent2
+                        newAnswer2 = valuesMap2.get(finalExponent2)
+                    }
+
+                    console.log(valuesMap2)
+                    console.log(finalExponent2)
+                    console.log(newAnswer2)
+
+                    if (cycle2 === 'CONTINUOUS') {
+                        console.log(inputArr[4])
+                        console.log(valuesArr2.length)
+                        if (inputArr[4] >= valuesArr2.length) newAnswer2 = valuesArr2[valuesArr2.length - 1]
+                        finalReduction2.innerText = `${base2}^${exponent2} ≡ ${newAnswer2}`
+                        console.log(finalReduction2.innerText)
+                        cycling.append(finalReduction2)
+                    } else {
+                        finalReduction2.innerText = `${inputArr[2]}^${exponent2}`
+                        if (base2 !== 0) finalReduction2.innerText += ` ≡ ${base2}^${finalExponent2}`
+                        finalReduction2.innerText += ` ≡ ${newAnswer2}`
+                        cycling.append(finalReduction2)
+                    }
+                    doubleFinalExponent = newAnswer2
+
+                    let doubleFinalAnswer = valuesMap.get(doubleFinalExponent)
+
+                    if (doubleFinalAnswer === undefined) {
+                        doubleFinalExponent -= initExp2
+                        doubleFinalExponent %= cycle2
+                        doubleFinalExponent = initExp2 + doubleFinalExponent
+                        doubleFinalAnswer = valuesMap.get(doubleFinalExponent)
+                    }
+
+                    console.log(initExp2)
+                    console.log(cycle2)
+
+                    console.log(newAnswer2)
+                    console.log(doubleFinalExponent)
+
+                    finalAnswer.innerText = `${inputArr[0]}^(${inputArr[2]}^${inputArr[4]}) ≡ ${inputArr[0]}^${doubleFinalExponent} ≡ ${doubleFinalAnswer}`
+                    cycling.append(finalAnswer)
+                    answer.innerText = `${inputArr[0]}^(${inputArr[2]}^${inputArr[4]}) ≡ ${doubleFinalAnswer}`
+                }
+                
+                if (inputArr[0] != base && cycleType !== 'double') {
+                    finalAnswer.innerText = `${inputArr[0]}^${inputArr[2]} ≡ ${newAnswer}`
+                    cycling.append(finalAnswer)
+                }
+                if (cycleType === 'normal') {
+                    if (finalAnswer.innerText) {
+                        answer.innerText = finalAnswer.innerText
+                    } else {
+                        answer.innerText = `${base}^${inputArr[2]} ≡ ${newAnswer}`
+                    }
+                }
+
+                // SQUARING
+
+                if (cycleType !== 'double') {
+                    // EXPAND EXPONENT
+                    
+                    let maxExponent = 0, binaryString, binaryArr = []
+                    while (2 ** (maxExponent + 1) <= exponent) maxExponent++
+                    for (let i = maxExponent, currVal = exponent; i >= 0; i--) {
+                        if (exponent === 0) {
+                            binaryString = 0
+                            break;
+                        }
+                        if (currVal - 2 ** i >= 0) {
+                            currVal -= 2 ** i
+                            binaryArr.push((2 ** i).toString())
+                            if (!binaryString) {
+                                binaryString = 2 ** i
+                            } else {
+                                binaryString = 2 ** i + " + " + binaryString
+                            }
+                        }
+                    };
+                    console.log(maxExponent)
+                    console.log(binaryString)
+
+                    if (typeof binaryString === "string") {
+                        const binary = document.createElement('p')
+                        squaring.append(binary)
+                        binary.innerText = `${base}^(${binaryString})`
+
+                        const expand = document.createElement('p')
+                        let expandedString
+                        for (let x of binaryArr.reverse()) {
+                            if (expandedString) {
+                                expandedString += ` x (${base}^${x})`
+                            } else {
+                                expandedString = `(${base}^${x})`
+                            }
+                        }
+                        expand.innerText = expandedString
+                        squaring.append(expand)
+
+                    };
+
+                    // CYCLING
+                    let squareValues = new Map([[undefined, 1]]);
+                    for (let i = 0, currVal = base; i < maxExponent + 1; i++) {
+                        const increment = document.createElement('p')
+                        if (i) {
+                            increment.innerText = `${base}^${2 ** i} ≡ (${base}^${2 ** (i - 1)})^2 ≡ ${currVal **= 2} ≡ ${currVal %= mod}`
+                        } else {
+                            increment.innerText = `${base}^${2 ** i} ≡ ${currVal} ≡ ${currVal %= mod}`
+                            increment.style.marginTop = "18px"
+                        }
+                        squareValues.set((2 ** i).toString(), currVal)
+                        squaring.append(increment)
+                    }
+
+                    // MULTIPLYING
+
+                    console.log(binaryArr)
+                    console.log(squareValues)
+
+                    const multiply = document.createElement('p')
+                    multiply.innerText = ""
+                    multiply.style.marginTop = "18px"
+                    squaring.append(multiply)
+                    if (typeof binaryString === "string") {
+                        let product;
+                        for (let x of binaryArr) {
+                            if (multiply.innerText) {
+                                multiply.innerText += ` x ${squareValues.get(x)}`
+                                product *= squareValues.get(x)
+                            } else {
+                                multiply.innerText += `${squareValues.get(x)}`
+                                product = squareValues.get(x)
+                            };
+                        };
+                        console.log(product)
+                        multiply.innerText += ` ≡ ${product % mod}`
+                    } else {
+                        multiply.innerText += `${inputArr[0]}${inputArr[1]}${inputArr[2]} ≡ ${squareValues.get(binaryArr[0])}`
+                    }
+                }
+                
+                if (cycleType === 'division') {
+                    const finalAnswerDouble = document.createElement('p')
+                    finalAnswerDouble.innerText = `(${inputArr[0]}^${inputArr[2]}) / ${inputArr[4]} ≡ ${newAnswer}`
+                    if (newAnswer !== 0) finalAnswerDouble.innerText += `/${inputArr[4]}`
+                    answer.innerText = finalAnswerDouble.innerText
+                    cycling.append(finalAnswerDouble)
+                    squaring.append(finalAnswerDouble.cloneNode(true))
+                }
+
+                method.innerHTML = cycling.innerHTML
+
+                let fadeMethodDelay = (cycleType === 'double') ? 250 : 400
+                console.log(fadeMethodDelay)
+                setTimeout(() => {answer.classList.add('show')}, 150 * fadeDelay)
+                setTimeout(() => {answerToggleContainer.classList.add('show')}, 250 * fadeDelay)
+                setTimeout(() => {fadeMethod()}, fadeMethodDelay * fadeDelay)
+
+            } catch (error) {
+                console.log(error)
+                const answer = document.querySelector('#answer')
+                answer.innerText = error
+                setTimeout(() => {answer.classList.add('show')}, 1)
+            };
+        };
+        
+        document.onkeypress = function (eventKeyName) {
+            eventKeyName = eventKeyName || window.event;
+            if (eventKeyName.keyCode === 13) submitButton.click()
+        };
+
+        const modVal = document.querySelector('#mod p')
+        const enterText = document.querySelector('#submit p')
+        const modContainer = document.querySelector('#mod')
+        const modButton = document.querySelectorAll('.mod-picker-button')
+        let transitioning = false;
+
+        modContainer.addEventListener('click', function(e){
+            e.stopPropagation()
+            if (transitioning) return;
+            transitioning = true;
+            modContainer.classList.toggle('expand')
+            if (modContainer.classList.contains('expand')) {
+                setTimeout(() => {transitioning = false}, 200)
+                setTimeout(() => {submitButton.classList.toggle('expand')}, 0)
+                enterText.animate(
+                    [{opacity: '0', easing: 'ease'}], {
+                    fill: "forwards",
+                    duration: 100,
+                });
+                setTimeout(() => {
+                    for (let node of modButton) {
+                        node.animate(
+                            [{opacity: '1', easing: 'ease'}], {
+                            fill: "forwards",
+                            duration: 250,
+                        });
+                    }
+                }, 150)
+                submitButton.animate(
+                [
+                {width: '160px', height: '36px', offset: 0.25, easing: 'ease',},
+                {width: '398px', height: '60px', easing: 'ease',}
+                ], {
+                fill: "forwards",
+                duration: 500,
+            });
+            } else {
+                setTimeout(() => {transitioning = false}, 325)
+                setTimeout(() => {submitButton.classList.toggle('expand')}, 300)
+                for (let node of modButton) {
+                    node.animate(
+                        [{opacity: '0', easing: 'ease'}], {
+                        fill: "forwards",
+                        duration: 250,
+                    });
+                }
+                setTimeout(() => {
+                    enterText.animate(
+                        [{opacity: '1', easing: 'ease'}], {
+                        fill: "forwards",
+                        duration: 225,
+                    });
+                }, 325)
+                submitButton.animate(
+                    [
+                    {width: '440px', height: '66px', offset: 0.3, easing: 'ease',},
+                    {width: '190px', height: '36px', offset: 0.7, easing: 'ease',},
+                    {width: '200px', height: '40px', easing: 'ease-out',}
+                    ], {
+                    fill: "forwards",
+                    duration: 600,
+                });
+            }
+            changedInput = false;
+        })
+        
+        let changedInput = false;
+        const modInput = document.querySelector('#mod-input')
+
+        setInputFilter(input, function(value) {return /[^0-9\^/]/.test(value)})
+        setInputFilter(modInput, function(value) {return /[^0-9]/.test(value)})
+        modInput.addEventListener('input', function() {
+            changedInput = true;
+        })
+        modInput.addEventListener('focus', function() {
+            this.value = '';
+        })
+
+        function setInputFilter(textbox, inputFilter) {
+            [ "input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout" ].forEach(function(event) {
+                textbox.addEventListener(event, function(e) {
+                    if (!inputFilter(this.value)) {
+                        this.oldValue = this.value;
+                        this.oldSelectionStart = this.selectionStart;
+                        this.oldSelectionEnd = this.selectionEnd;
+                    } else if (this.hasOwnProperty("oldValue")) {
+                        this.value = this.oldValue;
+                        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                    } else {
+                        this.value = '';
+                    }
+                });
+            });
+        };
+
+        document.addEventListener('click', function(){
+            if (modContainer.classList.contains('expand')) {
+                modContainer.animate(
+                    [{backgroundColor: 'rgb(245, 245, 245)', easing: 'ease'},
+                    {backgroundColor: 'white', easing: 'ease'}],
+                    {duration: 100}
+                )
+                if (changedInput) {
+                    if (modInput.value === modVal.innerText) {
+                        modContainer.click()
+                        return;
+                    }
+                    if (modInput.value < 2) {
+                        modInput.value = "";
+                        modContainer.click()
+                        return;
+                    }
+                    modVal.animate(
+                        [{opacity: '0', easing: 'ease'}], {
+                            fill: 'forwards',
+                            duration: 200,
+                    });
+                    setTimeout(() => {
+                        modVal.innerText = parseInt(modInput.value)
+                        modVal.animate(
+                            [{opacity: '1', easing: 'ease'}], {
+                                fill: 'forwards',
+                                duration: 200,
+                        });
+                    }, 250)
+                }
+                modContainer.click()
+            };
+        });
+
+        const settingsIcon = document.querySelector('#settings-ico')
+        const settingsContainer = document.querySelector('#settings-container')
+        const header = document.querySelector('header') 
+        const menuBackground = document.createElement('div')
+        menuBackground.id = 'menu-background'
+
+        menuBackground.addEventListener('click', (e) => {
+            settingsContainer.classList.remove('shown')
+            menuBackground.classList.remove('shown')
+            header.classList.remove('dark')
+        })
+        header.addEventListener('click', () => menuBackground.click())
+        document.body.append(menuBackground)
+
+        settingsIcon.addEventListener('click', (e) => {
+            e.stopPropagation()
+            if (table.classList.contains('active')) {
+                table.classList.toggle('active')
+                setTimeout(function(){
+                    table.innerHTML = ''
+                }, 350)
+            } else {
+                settingsContainer.classList.toggle('shown')
+                menuBackground.classList.toggle('shown')
+                header.classList.toggle('dark')
+            }
+        });
+    settingsContainer.addEventListener('click', (e) => e.stopPropagation())
+
+    let fadeDelay = 1
+    const settingsToggle = document.querySelector('.toggle')
+    settingsToggle.addEventListener('click', function() {
+        this.classList.toggle('active')
+        if (fadeDelay) {
+            fadeDelay = 0
+        } else {
+            fadeDelay = 1
+        }
+    })
+
+    let tableArr = [
+        [
+            [1,2,1,1,2,1,1,2,1,1,2],
+            [1,3,2,1,2,2,2,2,1,3,2],
+            [1,6,3,3,6,2,3,2,1,1,6],
+            [1,4,2,3,2,3,2,2,1,4,2],
+            [1,4,4,2,2,1,4,4,2,1,2],
+            [1,7,3,3,6,2,6,2,1,3,6],
+            [1,6,6,3,6,2,1,2,3,6,6],
+            [1,5,4,3,4,4,2,3,2,5,4],
+            [1,18,4,9,18,3,9,6,3,3,18],
+            [1,5,4,2,2,3,4,4,2,3,2],
+            [1,10,5,5,10,10,10,10,5,2,2]
+        ],
+        [ // K = 7
+            [1,3,6,3,6,2,1,1,3,6,3],
+            [1,3,6,3,6,2,1,1,3,6,3],
+            [1,6,6,3,6,2,1,2,3,6,6],
+            [1,4,6,3,6,3,2,1,3,7,6],
+            [1,12,12,6,6,2,4,4,6,6,3],
+            [1,6,6,3,6,2,1,2,3,6,6],
+            [1,21,42,21,42,14,2,7,21,42,21],
+            [1,5,6,4,6,4,2,1,3,8,6],
+            [1,6,7,3,6,3,3,2,3,6,6],
+            [1,12,12,6,6,2,4,4,6,6,3],
+            [1,30,30,15,30,10,10,10,15,6,3]
+        ],
+        [ // K = 8
+            [1,3,2,2,2,3,2,1,1,3,2],
+            [1,4,4,2,4,4,2,2,2,4,4],
+            [1,4,2,3,2,3,2,2,1,4,2],
+            [1,5,8,3,8,5,4,2,4,5,8],
+            [1,6,4,3,2,4,4,4,2,3,2],
+            [1,5,4,3,4,4,2,3,2,5,4],
+            [1,5,6,4,6,4,2,1,3,8,6],
+            [1,6,16,3,16,6,8,2,8,6,16],
+            [1,8,3,4,6,3,6,2,1,4,6],
+            [1,7,4,3,4,5,4,5,2,4,4],
+            [1,12,10,6,10,12,10,10,5,4,2]
+        ],
+        [ // K = 9
+            [1,6,2,3,6,2,3,2,1,1,6],
+            [1,6,3,3,6,2,3,2,1,1,6],
+            [1,18,3,9,18,3,9,6,2,3,18],
+            [1,7,3,3,6,2,6,2,1,3,6],
+            [1,12,5,6,6,3,12,4,2,1,6],
+            [1,18,4,9,18,3,9,6,3,3,18],
+            [1,6,7,3,6,3,3,2,3,6,6],
+            [1,8,3,4,6,3,6,2,1,4,6],
+            [1,54,4,27,54,4,27,18,2,9,54],
+            [1,12,5,6,6,3,12,4,2,1,6],
+            [1,30,6,15,30,11,30,10,5,2,6]
+        ],
+        [ // K = 10
+            [1,4,4,2,1,1,4,4,2,1,1],
+            [1,5,4,2,1,3,4,4,2,2,2],
+            [1,4,4,2,2,1,4,4,2,1,2],
+            [1,6,4,3,2,4,4,4,2,3,2],
+            [1,20,20,10,3,5,4,20,10,2,5],
+            [1,5,4,2,2,3,4,4,2,3,2],
+            [1,12,12,6,6,2,4,4,6,6,3],
+            [1,7,4,3,4,5,4,5,2,4,4],
+            [1,12,5,6,6,3,12,4,2,1,6],
+            [1,21,20,10,3,6,4,20,10,2,10],
+            [1,20,20,10,5,10,20,20,10,2,1]
+        ],
+        [ // K = 11
+            [1,10,5,5,5,10,10,10,5,2,1],
+            [1,10,5,5,5,10,10,10,5,2,1],
+            [1,10,5,5,10,10,10,10,5,2,2],
+            [1,11,10,5,5,11,10,10,5,3,2],
+            [1,20,20,10,5,10,20,20,10,2,1],
+            [1,10,5,5,10,10,10,10,5,2,2],
+            [1,30,30,15,30,10,10,10,15,6,3],
+            [1,12,10,6,10,12,10,10,5,4,2],
+            [1,30,6,15,30,11,30,10,5,2,6],
+            [1,20,20,10,5,10,20,20,10,2,1],
+            [1,110,5,55,55,110,110,110,5,22,2]
+        ]
+    ]
+
+    //
+    const tableDivContainer = document.createElement('div')
+    tableDivContainer.id = 'tablediv-container'
+
+    const directions = document.createElement('h3')
+    directions.innerText = `Rows = Base, Columns = Divisor`
+    tableDivContainer.append(directions)
+
+    
+    const tableDiv = document.createElement('div')
+    tableDiv.id = 'tablediv'
+
+    tableDivContainer.append(tableDiv)
+
+    colAssign = function(element, val) {
+        if (val > 30) return 'col9'
+        if (val > 20) return 'col8'
+        if (val > 15) return 'col7'
+        if (val > 12) return 'col6'
+        if (val > 10) return 'col5'
+        if (val > 7) return 'col4'
+        if (val > 5) return 'col3'
+        if (val > 3) return 'col2'
+        if (val > 1) return 'col1'
+        return 'col0'
+    }
+
+    for (let i = 0; i < 6; i++) {
+
+        const tableContainer = document.createElement('div')
+        tableContainer.classList.add('table-container')
+        const tableTitle = document.createElement('h3')
+        tableTitle.innerText = `k = ${i + 6}`
+        const table = document.createElement('table')
+        tableContainer.append(tableTitle)
+        tableContainer.append(table)
+        for (let j = -1; j < 11; j++) {
+            const tableRow = document.createElement('tr')
+            for (let k = -1; k < 11; k++) {
+                let tableData
+                if (j < 0) {
+                    tableData = document.createElement('th')
+                    tableData.innerText = k + 1;
+                    if (k < 0) tableData.innerText = ''
+                    tableData.classList.add('horizontal-header')
+                } else {
+                    if (k < 0) {
+                        tableData = document.createElement('th')
+                        tableData.innerText = j + 1;
+                        tableData.classList.add('vertical-header')
+                    } else {
+                        tableData = document.createElement('td')
+                        let value = tableData.innerText = tableArr[i][j][k]
+                        tableData.classList.add(colAssign(tableData, value))
+                        tableData.innerText = value
+                        tableData.classList.add('table-data')
+                    };
+                };
+                tableRow.append(tableData)
+            }
+            table.append(tableRow)
+        }
+        tableDiv.append(tableContainer)
+    }
+
+    const settingsButton = document.querySelector('.settings-button')
+    const table = document.querySelector('#table')
+    settingsButton.addEventListener('click', function(){
+        table.classList.toggle('active')
+        menuBackground.click()
+        if (table.classList.contains('active')) {
+            table.append(tableDivContainer.cloneNode('deep'))
+        } else {
+            setTimeout(function(){
+                table.innerHTML = ''
+            }, 350)
+        }
+    })
+
+    </script>
+</body>
+</html>
