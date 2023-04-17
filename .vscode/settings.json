@@ -2,4 +2,5 @@
     "liveServer.settings.multiRootWorkspaceName": "GitHub",
     "vscode-edge-devtools.webRoot": "${workspaceFolder}/equationspractice.github.io",
     "liveServer.settings.root": "/equationspractice.github.io",
+    "liveServer.settings.port": 5501
 }

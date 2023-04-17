@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="42"
+   height="42"
+   viewBox="0 0 11.1125 11.1125"
+   version="1.1"
+   id="svg245"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="divide2.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview247"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="16.932469"
+     inkscape:cx="17.628853"
+     inkscape:cy="17.274504"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs242" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.259387;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:2.3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect418"
+       width="3.8750029"
+       height="0.77358282"
+       x="3.6187487"
+       y="5.2693243" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.259387;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:2.3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect420"
+       width="0.88394552"
+       height="0.88394552"
+       x="5.1142774"
+       y="3.6016934" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.259387;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:2.3;stroke-dasharray:none;stroke-opacity:1"
+       id="rect422"
+       width="0.88394552"
+       height="0.88394552"
+       x="5.1142774"
+       y="6.8610659" />
+  </g>
+</svg>

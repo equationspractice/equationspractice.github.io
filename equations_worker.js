@@ -256,9 +256,10 @@ onmessage = (e) => {
                 for (let x of setVariations) {
                     switch (x) {
                         case "wild": variationsMap.set("wild", variationInput("wild")); break;
-                        case "powersOfBase": variationsMap.set("powersOfBase", true); break;
-                        // case "base": variationsMap.set('base', variationInput("base")); break;
-                        case "base": variationsMap.set('base', 12); break;
+                        // case "wild": variationsMap.set("wild", 0); break;
+                        // case "powersOfBase": variationsMap.set("powersOfBase", true); break;
+                        case "base": variationsMap.set('base', variationInput("base")); break;
+                        // case "base": variationsMap.set('base', 10); break;
                         case "multipleOf": variationsMap.set("multipleOf", variationInput('multipleOf')); break;
                         case "multipleOperations": variationsMap.set("multipleOperations", true); break;
                         case "factorial": variationsMap.set("factorial", true); break;
@@ -268,6 +269,7 @@ onmessage = (e) => {
                                 let exponentColor = variationInput("exponent")
                                 let coloredNumerals = cubesArr[exponentColor[0]].filter(val => typeof val === "number")
                                 if (coloredNumerals.length) variationsMap.set("exponent", exponentColor[1]);
+                                // if (coloredNumerals.length) variationsMap.set("exponent", 'blue');
                             }
                             break;
                         case "imaginary": variationsMap.set("imaginary", true); break;
@@ -278,11 +280,15 @@ onmessage = (e) => {
             };
             function variationInput(input) { // GENERATES INPUT FOR VARIATIONS THAT REQUIRE INPUTS
                 switch (input) {
-                    case "wild": return getRandomNumber(0, 1) && cubesArr.flat().includes(0) ? 0 : "x";
+                    case "wild":
+                        let outputArr = []
+                        if (cubesArr.flat().includes(0)) outputArr.push(0)
+                        if (cubesArr.flat().includes('x')) outputArr.push('x')
+                        return randomArrayValue(outputArr)
                     case "base":
-                        let base = getRandomNumber(8, 12);
-                        return base === 10 ? variationInput("base") : base;
-                    case "multipleof": return getRandomNumber(6, 11);
+                        let base = randomArrayValue([8, 9, 11, 12])
+                        return base;
+                    case "multipleOf": return getRandomNumber(6, 11);
                     case "exponent":
                         switch (getRandomNumber(0, 3)) {
                             case 0: return [0, "red"];
@@ -301,12 +307,10 @@ onmessage = (e) => {
                 let roll = getRandomNumber(1, 11);
                     switch (roll) {
                         case 1:
-                            break;
-                            if (!!variationsMap.get('wild') && cubesArr.flat().some(val => val === 0 || val === "x")) {
+                            if (!variationsMap.get('wild') && cubesArr.flat().some(val => val === 0 || val === "x")) {
                                 variationsMap.set("wild", variationInput("wild"));
                             }; break;
                         case 2:
-                            break;
                             if (!variationsMap.get('powersOfBase')) {
                                 variationsMap.set("powersOfBase", true);
                             }; break;
@@ -316,7 +320,7 @@ onmessage = (e) => {
                             }; break;
                         case 4:
                             if (!variationsMap.get('multipleOf')) {
-                                variationsMap.set("multipleOf", variationInput("multipleof"));
+                                variationsMap.set("multipleOf", variationInput("multipleOf"));
                             }; break;
                         case 5:
                             if (!variationsMap.get('multipleOperations')) {
@@ -331,9 +335,8 @@ onmessage = (e) => {
                                 variationsMap.set("numberOfFactors", true);
                             }; break;
                         case 8:
-                            break;
                             if (!variationsMap.get('exponent')) {
-                                let exponentColor = variationInput("exponent")
+                                let exponentColor = variationInput("exponent")  
                                 let coloredNumerals = cubesArr[exponentColor[0]].filter(val => typeof val === "number")
                                 if (coloredNumerals.length) variationsMap.set("exponent", exponentColor[1]);
                             }; break;
@@ -453,8 +456,8 @@ onmessage = (e) => {
                         goalAdd(randomNumerals.filter(zeroFilter)[0]);
                         goalAdd(randomNumerals[0]);
                         goalStatus.push("NUMFACTOR");
-                    } else if (variationsMap.get("decimal") && !getRandomNumber(0, 3) && thirdNumeral) {
-                        // IF DECIMAL POINT: ADD 3 NUMERALS (25%)
+                    } else if (variationsMap.get("decimal") && !getRandomNumber(0, 3) && thirdNumeral && false) {
+                        // IF decimal variation, add 3 numerals (25%)
                         goalAdd(randomNumerals.filter(zeroFilter)[0]);
                         goalAdd(randomNumerals[0]);
                         goalAdd(randomNumerals[0]);
@@ -490,7 +493,7 @@ onmessage = (e) => {
                             goalAdd(randomNumerals[0]);
                         };
                     } else {
-                        // DEFAULT: APPEND 2 NUMERALS
+                        // Default, append 2 numerals
                         goalAdd(randomNumerals.filter(zeroFilter)[0]);
                         goalAdd(randomNumerals[0]);
                         goalStatus.push("2NUM");
@@ -514,9 +517,7 @@ onmessage = (e) => {
                 };
             };
 
-            //STAGE 2: APPEND MORE NUMERALS IF THERE IS ROOM
-            // if ((goalStatus.includes("NUMFACTOR") || (goalStatus.includes("2NUM") && variationsMap.get("multipleOf")))
-            // && operationsArr.includes("^") && getRandomNumber(0, 1) && goalStatus.includes("NUMOP")) {
+            // Stage 2, append more numerals if there is room
             if (variationsMap.get('multipleOf') && operationsArr.includes("^") && goalArr.length < 3) {
                 //IF POSSIBLE, APPEND EXPONENT AND 1-2 NUMERALS (50%)
                 goalAdd("^");
@@ -551,7 +552,7 @@ onmessage = (e) => {
         let operationRegex = /[+−x÷^]/
         const goalValues = [], goalFlags = [], goalModValues = [];
 
-        //CALCULATE GOAL
+        // Calculate Goal
 
         (function calcGoal(arr = goalArr, init = true) {
             if (init) {
@@ -1011,18 +1012,19 @@ onmessage = (e) => {
         console.log(forbiddenArr)
         if (returnNewPuzzle) return generatePuzzle(randomize, setCubes);
         class PuzzleData {
-            constructor(cubesArr, modifiedCubesArr, variations, goalArr, goalValues, goalModValues, forbiddenArr, solution) {
+            constructor(cubesArr, modifiedCubesArr, variations, goalArr, goalValues, goalFlags, goalModValues, forbiddenArr, solution) {
                 this.cubes = cubesArr;
                 this.modifiedCubes = modifiedCubesArr;
                 this.variations = variations
                 this.goal = goalArr;
                 this.goalValues = goalValues;
+                this.goalFlags = goalFlags;
                 this.goalModValues = goalModValues;
                 this.forbidden = forbiddenArr;
                 this.solution = solution;
             };
         };
-        return new PuzzleData(cubesArr, modifiedCubesArr, variationsMap, goalArr, goalValues, goalModValues, forbiddenArr, solution)
+        return new PuzzleData(cubesArr, modifiedCubesArr, variationsMap, goalArr, goalValues, goalFlags, goalModValues, forbiddenArr, solution)
     };
 
     let queueData = generatePuzzle(...e.data)
