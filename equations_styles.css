@@ -1494,9 +1494,9 @@ header h1 {
         width: 92%;
     }
 }
-div.mobile-console {
+/* div.mobile-console {
     display: none !important;
 }
 div.mobile-console.shown {
     display: flex !important;
-}
+} */
