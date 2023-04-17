@@ -257,7 +257,7 @@ onmessage = (e) => {
                     switch (x) {
                         case "wild": variationsMap.set("wild", variationInput("wild")); break;
                         // case "wild": variationsMap.set("wild", 0); break;
-                        // case "powersOfBase": variationsMap.set("powersOfBase", true); break;
+                        case "powersOfBase": variationsMap.set("powersOfBase", true); break;
                         case "base": variationsMap.set('base', variationInput("base")); break;
                         // case "base": variationsMap.set('base', 10); break;
                         case "multipleOf": variationsMap.set("multipleOf", variationInput('multipleOf')); break;
