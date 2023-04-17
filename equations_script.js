@@ -1,6 +1,20 @@
 let setTimer = new Date();
 const width500 = window.innerWidth <= 500
 
+
+console.log("1")
+
+let test1 = math.bignumber(3)
+console.log(test1)
+let test2 = 10 ** 2
+console.log(test2)
+let test3 = math.bignumber(10 ** 2)
+console.log(test3)
+
+
+console.log("2")
+throw "STOP"
+
 // Start of functions
 function clone(arr) {
     return JSON.parse(JSON.stringify(arr))
@@ -443,7 +457,7 @@ let puzzleParameters
 puzzleParameters = {
     randomize: true,
     setCubes: null,
-    setVariations: [],
+    setVariations: ['powersOfBase'],
     setVariationsLength: 6,
     setGoal: null,
     setForbidden: null,

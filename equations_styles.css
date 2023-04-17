@@ -491,7 +491,7 @@ header h1 {
     opacity: 0;
 }
 .pob-base-svg {
-    width: 30px;
+    width: 34px;
     height: 30px;
 
     position: absolute;
@@ -499,6 +499,10 @@ header h1 {
     left: -1px;
 
     opacity: 0;
+}
+.pob-base-svg.small {
+    width: 30px;
+    height: 30px;
 }
 .pob-exponent {
     display: flex;

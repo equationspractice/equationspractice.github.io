@@ -258,8 +258,8 @@ onmessage = (e) => {
                         case "wild": variationsMap.set("wild", variationInput("wild")); break;
                         // case "wild": variationsMap.set("wild", 0); break;
                         case "powersOfBase": variationsMap.set("powersOfBase", true); break;
-                        case "base": variationsMap.set('base', variationInput("base")); break;
-                        // case "base": variationsMap.set('base', 10); break;
+                        // case "base": variationsMap.set('base', variationInput("base")); break;
+                        case "base": variationsMap.set('base', 8); break;
                         case "multipleOf": variationsMap.set("multipleOf", variationInput('multipleOf')); break;
                         case "multipleOperations": variationsMap.set("multipleOperations", true); break;
                         case "factorial": variationsMap.set("factorial", true); break;
