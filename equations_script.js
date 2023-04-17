@@ -2762,12 +2762,12 @@ function hideSelector(e) {
                 let base = puzzleData.variations.get('base') ?? 10
                 const baseSvg = createSvg('custom', {customText: base})
                 baseSvg.classList.add('pob-base-svg')
-
+                let leftOffset = base >= 10 ? '-3px' : '4px'
                 baseSvg.animate(
                     [
                         { bottom: '5px', left: '-1px' },
                         { opacity: 0 , offset: 0.5, },
-                        { bottom: '1px', left: '-3px' , opacity: 1 },
+                        { bottom: '1px', left: leftOffset , opacity: 1 },
                     ], {
                     fill: "forwards",
                     duration: 330,
@@ -2836,9 +2836,11 @@ function hideSelector(e) {
 
                 const baseSvg = activeCube.querySelector('.pob-base-svg')
 
+                let base = puzzleData.variations.get('base') ?? 10
+                let leftOffset = base >= 10 ? '-3px' : '3px'
                 baseSvg.animate(
                     [
-                        { bottom: '1px', left: '-4px' , opacity: 1 },
+                        { bottom: '1px', left: leftOffset , opacity: 1 },
                         { opacity: 0 , offset: 0.7, },
                         { bottom: '5px', left: '-1px' , opacity: 0 },
                     ], {
@@ -4094,6 +4096,12 @@ function submitInput() {
                                         string += (pushNumber(arr, j))
                                         string += ' }'
                                     }; break;
+                                case "p":
+                                    let base = puzzleData.variations.get('base') ?? 10
+                                    if (arr[j].charAt(1) === '1') base *= 1
+                                    if (arr[j].charAt(2) === '1') base = 1 / base
+                                    string += `${base}^ {${arr[j].slice(3)}}`
+                                    break;
                                 default:
                                     console.log(string)
                                     string += arr[j];
