@@ -3033,7 +3033,31 @@ function createCategory(buttonID, pageID, title) {
     button.addEventListener('click', () => {switchPage(page, title)})
     return button
 }
-function createToggle() {
+function createToggle(label, action) {
+
+    const toggleContainer = document.createElement('li')
+    toggleContainer.classList.add('settings-toggle')
+    const toggleLabel = document.createElement('p')
+    toggleLabel.innerText = label
+    toggleContainer.append(toggleLabel)
+
+    const toggle = document.createElement('div')
+    toggle.classList.add('toggle')
+    toggleContainer.append(toggle)
+    const toggleSwitch = document.createElement('div')
+    toggleSwitch.classList.add('toggle-switch')
+    toggle.append(toggleSwitch)
+
+    toggle.addEventListener('click', () => action(toggle))
+
+    return toggleContainer
+
+    // <li class="settings-toggle">
+    //     <p>Force Symmetric Difference</p>
+    //     <div id="force-symmetric-difference" class="toggle" data-type="force-symmetric-difference">
+    //         <div class="toggle-switch"></div>
+    //     </div>
+    // </li>
 
 }
 function createCounter(label, id, action, parameters = {}) {
@@ -3130,6 +3154,13 @@ function createCheckbox(text, type) {
     }
     settingsNodesContainer.append(mainPage)
 
+    const consoleToggle = createToggle('Show Console (Testing)', (element) => {
+        element.classList.toggle('active')
+        const mobileConsole = document.querySelector('.mobile-console')
+        if (mobileConsole) mobileConsole.classList.toggle('shown')
+    })
+    mainPage.append(consoleToggle)
+    
 })();
 
 const variationCount = document.querySelector('#variation-count')
@@ -3143,6 +3174,10 @@ function forceVariation(element, variation) {
     }
     element.classList.toggle('active')
 }
+
+
+
+
 
 
 function stopPropogation(e) { e.stopPropagation() }
@@ -4256,7 +4291,6 @@ function submitInput() {
         computerSolutionContainer.append(computerAnswer)
 
         let currIterable = puzzleData.solution.flag
-        let upsidedown, sideways;
 
         function inputComputerCube(input, symbol, orientation = []) {
 

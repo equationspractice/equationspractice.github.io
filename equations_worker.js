@@ -1010,7 +1010,7 @@ onmessage = (e) => {
             forbiddenArr = deleteFirstArrItem(forbiddenArr, toPush);
         }
         console.log(forbiddenArr)
-        if (returnNewPuzzle) return generatePuzzle(randomize, setCubes);
+        if (returnNewPuzzle) return generatePuzzle(randomize, setCubes, setVariations, setVariationsLength, setGoal, setForbidden);
         class PuzzleData {
             constructor(cubesArr, modifiedCubesArr, variations, goalArr, goalValues, goalFlags, goalModValues, forbiddenArr, solution) {
                 this.cubes = cubesArr;
