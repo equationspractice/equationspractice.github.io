@@ -1,4 +1,5 @@
 let setTimer = new Date();
+const width500 = window.innerWidth <= 500
 
 // Start of functions
 function clone(arr) {
@@ -592,7 +593,7 @@ function newPuzzle() {
             hoverDiv.dataset.container = 'goal-container'
             newGoalCube.append(cubeContent)
             currInput = 'goal-container'
-            checkInputWidth(46, newGoalCube)
+            checkInputWidth(width500 ? 44 : 46, newGoalCube)
             currInput = null
         };
 
@@ -1208,6 +1209,7 @@ function inputCube(cube) {
     if (cube === undefined) return;
     if (cube === 'factorial' && !puzzleData.variations.get('factorial')) return;
     if (cube === 'log' && !puzzleData.variations.get('log')) return;
+    if (cube === 'imaginary' && !puzzleData.variations.get('imaginary')) return;
     if (cube === 'decimal' && (currInput === 'solution-container' || !puzzleData.variations.get('decimal'))) return
     let wrap, selectedCubeIndex;
     if (currInput === 'solution-container') {
@@ -1235,7 +1237,7 @@ function inputCube(cube) {
 
         // Set cube data
         let cubeRestraint = selectedCubeElement.dataset.restraint
-        let cubeWidth = 46;
+        let cubeWidth = width500 ? 44 : 46;
         let symbol = selectedCubeElement.dataset.symbol
         if (/[()!.]/.test(symbol)) {
             cubeWidth = 16;
@@ -1331,7 +1333,7 @@ function inputCube(cube) {
         // Add classes and colors if cube is not parenthesis
         
         solutionCube.append(cubeContent)
-        cubeWidth = 46
+        cubeWidth = width500 ? 44 : 46
         solutionCube.classList.add('cube', 'solution-cube');
 
         let colorIndex, finalColor;
@@ -4363,6 +4365,7 @@ document.addEventListener('keydown', function (keypress) {
     console.log(inputValues)
     console.log(inputValues.solution.cursorRow)
     console.log(puzzleParameters.setVariations)
+    
     // answerContent.scrollTo({top: answerContent.scrollTop - 10})
     // console.log(answerContent.scrollTop)
     // console.log(answerContent.scrollHeight)

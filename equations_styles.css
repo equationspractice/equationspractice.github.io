@@ -862,7 +862,7 @@ header h1 {
     flex-wrap: wrap;
     transition: translate cubic-bezier(.2,.5,0,1) 0.3s, filter 0.25s cubic-bezier(.4,0,.2,1);
     translate: 0;
-    padding: 8px 0 4px;
+    padding: 8px 4px 4px;
     box-shadow: 0 2px 10px rgb(0 0 0 / 30%);
 }
 #keyboard-container.dark {
@@ -1264,6 +1264,7 @@ header h1 {
     /* font-style: italic; */
     color: rgb(116, 116, 116);
     margin: 6px 0 18px 0;
+    max-width: 86%;
 }
 #result-input-container {
     margin: 20px 0;
@@ -1413,4 +1414,79 @@ header h1 {
     text-align: center;
     /* padding-bottom: 30px; */
     padding-bottom: 20px;
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+
+    #board-container {
+        padding: 0;
+    }
+    #parent-restraint-container {
+        margin: 5px 0;
+    }
+    .restraint-container:nth-child(1) {
+        margin: 0 2.5px 0 5px;
+    }
+    .restraint-container:nth-child(2) {
+        display: none;
+    }
+    .restraint-container:nth-child(3) {
+        margin: 0 5px 0 2.5px;
+    }
+    #input-container {
+        margin-top: 0px;
+    }
+    #solution-view-container {
+        padding: 0 8px;
+    }
+    #equals-container {
+        height: 14px;
+        width: 44px;
+        margin: 0px;
+    }
+    #equals-container div {
+        height: 5px;
+    }
+    #goal-view-container {
+        padding: 0 8px;
+    }
+    .keyboard-button {
+        height: 45px;
+        width: 36px;
+    }
+    .keyboard-large-button {
+        width: 54px;
+    }
+    .cube {
+        height: 40px;
+        width: 40px;
+    }
+    .cube .cube-content {
+        height: 40px;
+        width: 40px;
+    }
+    .cube .hover-div {
+        height: 40px;
+        width: 40px;
+    }
+    .cube .background-div {
+        height: 40px;
+        width: 40px;
+    }
+    #forbidden-container, #permitted-container, #required-container {
+        grid-template-columns: repeat(auto-fill, 46px);
+        grid-template-rows: repeat(auto-fill, 46px);
+        /* padding: 2px; */
+    }
+    #input-result {
+        width: 92%;
+    }
+    #result-input-container {
+        width: 92%;
+        margin: 0;
+    }
+    #computer-input-container {
+        width: 92%;
+    }
 }
