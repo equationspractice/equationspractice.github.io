@@ -575,12 +575,24 @@ function newPuzzle() {
             const newGoalCube = document.createElement("div")
             let name = translateName(goalCube.cube.toString())
             newGoalCube.dataset.type = name
+            newGoalCube.dataset.color = goalCube.color
             newGoalCube.classList.add(name, "cube", "goal-cube", goalCube.color)
-            if (name === staticWild) {
+            
+            if (name === staticWild) { // Wild
                 newGoalCube.addEventListener('click', toggleCubeOptions)
                 newGoalCube.classList.add('wild')
                 newGoalCube.classList.add('pointer')
                 newGoalCube.classList.add('no-wild-translate')
+            } else { // Exponent
+                let symbol = translateName(name)
+                let exponent = puzzleData.variations.get('exponent')
+                let numbersArr = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'zero']
+                if (puzzleData.variations.get('base') >= 11) numbersArr.push('exponent')
+                if (puzzleData.variations.get('base') >= 12) numbersArr.push('square-root')
+                if (goalCube.color === exponent && numbersArr.includes(name)) {
+                    newGoalCube.addEventListener('click', toggleCubeOptions)
+                    newGoalCube.classList.add('pointer')
+                }
             }
 
             const svg = createSvg(name)
@@ -2605,7 +2617,7 @@ function toggleCubeOptions(e) {
 
     // Exponent
     let exponent = puzzleData.variations.get('exponent')
-    if (exponent && (numbersArr.includes(type) || this.classList[0] === staticWild) && this.classList.contains('solution-cube')) {
+    if (exponent && (numbersArr.includes(type) || this.classList[0] === staticWild)) {
 
         let symbol = translateName(this.classList[0])
         let colorsArr = getPotentialColors(symbol)
@@ -2633,7 +2645,7 @@ function toggleCubeOptions(e) {
 
             exponentSetting.append(exponentToggle)
 
-            if (colorsArr.length > 1) {
+            if (colorsArr.length > 1 && this.classList.contains('solution-cube')) {
                 exponentSetting.classList.add('pick-color')
                 containerHeight += 4
 
@@ -2707,7 +2719,8 @@ function toggleCubeOptions(e) {
     selectorContainer.style.height = containerHeight + "px"
     selectorContainer.style.width = containerWidth + "px"
     this.classList.toggle('active')
-    solutionContainer.classList.toggle('selector-active')
+    const activeContainer = this.parentElement
+    activeContainer.classList.toggle('selector-active')
     selectorContainer.classList.toggle('shown')
     selectorBackground.classList.toggle('shown')
 
@@ -2878,29 +2891,31 @@ function hideSelector(e) {
 
     }
 
+    
     // Hover detection mechanism for solution-container backgorund color
-    let element = solutionContainer, minX = 0, minY = 0;
+    const activeContainer = activeCube.parentElement
+    let element = activeContainer, minX = 0, minY = 0;
     while (true) {
         minX += element.offsetLeft;
         minY += element.offsetTop;
         if (element.offsetParent === null) break;
         element = element.offsetParent;
     }
-    maxX = minX + solutionContainer.offsetWidth
-    maxY = minY + solutionContainer.offsetHeight
+    maxX = minX + activeContainer.offsetWidth
+    maxY = minY + activeContainer.offsetHeight
 
     if (e.clientX > minX && e.clientY > minY && e.clientX < maxX && e.clientY < maxY) {
-        solutionContainer.classList.add('hover')
+        activeContainer.classList.add('hover')
     }
 
     selectorContainer.addEventListener('transitionend', function () {
         this.remove()
-        solutionContainer.classList.remove('hover')
+        activeContainer.classList.remove('hover')
         activeCube.classList.remove('active')
     })
 
     // Recalibrate classlists
-    solutionContainer.classList.remove('selector-active')
+    activeContainer.classList.remove('selector-active')
     selectorContainer.classList.remove('shown')
     selectorBackground.classList.remove('shown')
     header.classList.remove('dark')
@@ -3849,6 +3864,8 @@ function submitInput() {
                         } else {
                             goalValue = math.mod(goalValue, puzzleData.variations.get('multipleOf'))
                         }
+                        if (value < 0) value += puzzleData.variations.get('multipleOf')
+                        if (goalValue < 0) goalValue += puzzleData.variations.get('multipleOf')
                     }
                     console.log(goalValue)
                     console.log(value)
@@ -4072,19 +4089,24 @@ function submitInput() {
                     console.log("1")
                     let realComp = math.re(answer[0])
                     if (math.largerEq(realComp, puzzleData.variations.get('multipleOf')) || math.isNegative(realComp)) {
-                        newNumber = math.complex(math.mod(realComp, puzzleData.variations.get('multipleOf')), math.im(answer[0]))
+                        let newNumber = math.complex(math.mod(realComp, puzzleData.variations.get('multipleOf')), math.im(answer[0]))
+                        if (newNumber < 0) newNumber += puzzleData.variations.get('multipleOf')
                         evaluationParagraph.innerText += ` and reduces down to ${newNumber}`
                     }; break;
                 case 'BigNumber':
                     console.log("2")
                     if (math.largerEq(answer[0], puzzleData.variations.get('multipleOf')) || math.isNegative(answer[0])) {
-                        evaluationParagraph.innerText += ` and reduces down to ${math.mod(answer[0], puzzleData.variations.get('multipleOf'))}`
+                        let newNumber = math.mod(answer[0], puzzleData.variations.get('multipleOf'))
+                        if (newNumber < 0) newNumber += puzzleData.variations.get('multipleOf')
+                        evaluationParagraph.innerText += ` and reduces down to ${newNumber}`
                     }; break;   
                 case 'number':
                     default:
                     console.log("3")
                     if (answer[0] >= puzzleData.variations.get('multipleOf') || answer[0] < 0) {
-                        evaluationParagraph.innerText += ` and reduces down to ${answer[0] % puzzleData.variations.get('multipleOf')}`
+                        let newNumber = answer[0] % puzzleData.variations.get('multipleOf')
+                        if (newNumber < 0) newNumber += puzzleData.variations.get('multipleOf')
+                        evaluationParagraph.innerText += ` and reduces down to ${newNumber}`
                     }
             }
         }
@@ -4304,19 +4326,23 @@ function submitInput() {
                     let realComp = math.re(goalAnswer[0])
                     console.log("1")
                     if (math.largerEq(realComp, puzzleData.variations.get('multipleOf')) || math.isNegative(realComp)) {
-                        newNumber = math.complex(math.mod(realComp, puzzleData.variations.get('multipleOf')), math.im(goalAnswer[0]))
+                        let newNumber = math.complex(math.mod(realComp, puzzleData.variations.get('multipleOf')), math.im(goalAnswer[0]))
                         goalEvaluationParagraph.innerText += ` and reduces down to ${newNumber}`
                     }; break;
                 case 'BigNumber':
                     console.log("2")
                     if (math.largerEq(goalAnswer[0], puzzleData.variations.get('multipleOf')) || math.isNegative(goalAnswer[0])) {
-                        goalEvaluationParagraph.innerText += ` and reduces down to ${math.mod(goalAnswer[0], puzzleData.variations.get('multipleOf'))}`
+                        let newNumber = math.mod(goalAnswer[0], puzzleData.variations.get('multipleOf'))
+                        if (newNumber < 0) newNumber += puzzleData.variations.get('multipleOf')
+                        goalEvaluationParagraph.innerText += ` and reduces down to ${newNumber}`
                     }; break;
                 case 'number':
                 default:
                     console.log("3")
                     if (goalAnswer[0] >= puzzleData.variations.get('multipleOf') || goalAnswer[0] < 0) {
-                        goalEvaluationParagraph.innerText += ` and reduces down to ${goalAnswer[0] % puzzleData.variations.get('multipleOf')}`
+                        let newNumber = goalAnswer[0] % puzzleData.variations.get('multipleOf')
+                        if (newNumber < 0) newNumber += puzzleData.variations.get('multipleOf')
+                        goalEvaluationParagraph.innerText += ` and reduces down to ${newNumber}`
                     }
             }
         }
