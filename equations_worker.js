@@ -258,9 +258,10 @@ onmessage = (e) => {
                         case "wild": variationsMap.set("wild", variationInput("wild")); break;
                         // case "wild": variationsMap.set("wild", 0); break;
                         case "powersOfBase": variationsMap.set("powersOfBase", true); break;
-                        // case "base": variationsMap.set('base', variationInput("base")); break;
-                        case "base": variationsMap.set('base', 8); break;
+                        case "base": variationsMap.set('base', variationInput("base")); break;
+                        // case "base": variationsMap.set('base', 12); break;
                         case "multipleOf": variationsMap.set("multipleOf", variationInput('multipleOf')); break;
+                        // case "multipleOf": variationsMap.set("multipleOf", 11); break;
                         case "multipleOperations": variationsMap.set("multipleOperations", true); break;
                         case "factorial": variationsMap.set("factorial", true); break;
                         case "numberOfFactors": variationsMap.set("numberOfFactors", true); break;
@@ -346,6 +347,7 @@ onmessage = (e) => {
                                 variationsMap.set("imaginary", true);
                             }; break;
                         case 10:
+                            break;
                             if (!variationsMap.get('decimal')) {
                                 variationsMap.set("decimal", true);
                             }; break;
@@ -506,7 +508,7 @@ onmessage = (e) => {
                 goalAdd(randomNumerals.filter(zeroFilter)[0]);
     
                 //APPEND OPERATION AND NUMERALS
-                if (randomOperations[0] === "^" ** variationsMap.get('multipleOf'))  { // IF EXPONENT, APPEND IT + 1 NUMERAL
+                if (randomOperations[0] === "^" && variationsMap.get('multipleOf'))  { // IF EXPONENT, APPEND IT + 1 NUMERAL
                     goalAdd(randomOperations[0]);
                     goalAdd(randomNumerals.filter(zeroFilter)[0]);
                     goalStatus.push("EXPONENTOP");
@@ -518,8 +520,8 @@ onmessage = (e) => {
             };
 
             // Stage 2, append more numerals if there is room
-            if (variationsMap.get('multipleOf') && operationsArr.includes("^") && goalArr.length < 3) {
-                //IF POSSIBLE, APPEND EXPONENT AND 1-2 NUMERALS (50%)
+            if (variationsMap.get('multipleOf') && operationsArr.includes("^") && goalArr.length < 3 && false) {
+                // If possibe, append exponent and 1-2 numerals (50%)
                 goalAdd("^");
                 goalAdd(randomNumerals.filter(zeroFilter)[0]);
                 goalAdd(randomNumerals[0])
@@ -558,21 +560,17 @@ onmessage = (e) => {
             if (init) {
                 // goalArr.length = 0
                 // variationsMap.set('factorial', undefined)
-                // variationsMap.set('base', undefined)
+                // variationsMap.set('base', 8)
                 // variationsMap.set('decimal', true)
                 // variationsMap.set('multipleOf', 11)
-                // let goalString = "4^73+5"
+                // console.log(variationsMap)
+                // let goalString = "12x4"
                 // console.log(strToArr(goalString))
                 // for (let x of strToArr(goalString)) goalArr.push(new GoalCube(x, 'black', 'up'));
-                // console.log(goalArr)
-
                 let newGoalArr = [];
                 for (let i = 0; i < goalArr.length; i++) {
 
                     function pushNumber(index) {
-                        // console.log("I")
-                        // console.log(goalArr[index])
-                        // console.log(goalArr[index + 1])
                         if (index === goalArr.length - 1) return goalArr[index].cube;
                         if (typeof goalArr[index + 1].cube === "string") return goalArr[index].cube;
                         i++
@@ -584,14 +582,12 @@ onmessage = (e) => {
                         newGoalArr.push(goalArr[i].cube)
                     };
                 };
-                console.log(newGoalArr)
                 let values = calcGoal(newGoalArr, false)
-                console.log(values)
+                
                 for (let val of values[0]) goalValues.push(val)
                 for (let flag of values[1]) goalFlags.push(flag)
                 if (variationsMap.get('multipleOf')) {
                     for (let val of values[0]) {
-                        // console.log(val)
                         if (typeof val === 'number') {
                             goalModValues.push(val % variationsMap.get('multipleOf'))
                         } else {
@@ -654,25 +650,22 @@ onmessage = (e) => {
             } else if (arr.length === 1) {
                 let answer = []; flag = []
                 let num = variationsMap.get('base') ? parseInt(arr[0], variationsMap.get('base')) : arr[0]
-                // console.log(parseInt(arr[0], variationsMap.get('base')))
                 answer.push(num); flag.push(arr[0].toString())
-                // console.log(num)
 
                 if (variationsMap.get('decimal') && Number.isInteger(num)) {
                     for (let i = 1; i <= num.toString().length; i++) {
                         if (variationsMap.get('base')) {
-                            answer.push(base(num / (10 ** i), variationsMap.get('base')))
+                            answer.push(base(arr[0] / (10 ** i), variationsMap.get('base')))
                         } else {
                             answer.push(num / (10 ** i))
                         }
-                        flag.push((num / (10 ** i)).toString())
+                        flag.push((arr[0] / (10 ** i)).toString())
                     }
                 }
                 if (variationsMap.get('factorial') && !variationsMap.get('multipleOf') && isFactoriable(num)) {
                     answer.push(factorial(num))
                     flag.push(arr[0] + "!")
                 }
-                // console.log(flag)
                 return [answer, flag];
             }
         }());

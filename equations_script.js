@@ -1,20 +1,6 @@
 let setTimer = new Date();
 const width500 = window.innerWidth <= 500
 
-
-console.log("1")
-
-let test1 = math.bignumber(3)
-console.log(test1)
-let test2 = 10 ** 2
-console.log(test2)
-let test3 = math.bignumber(10 ** 2)
-console.log(test3)
-
-
-console.log("2")
-throw "STOP"
-
 // Start of functions
 function clone(arr) {
     return JSON.parse(JSON.stringify(arr))
@@ -457,7 +443,7 @@ let puzzleParameters
 puzzleParameters = {
     randomize: true,
     setCubes: null,
-    setVariations: ['powersOfBase'],
+    setVariations: [],
     setVariationsLength: 6,
     setGoal: null,
     setForbidden: null,
@@ -2778,12 +2764,14 @@ function hideSelector(e) {
                 let base = puzzleData.variations.get('base') ?? 10
                 const baseSvg = createSvg('custom', {customText: base})
                 baseSvg.classList.add('pob-base-svg')
-                let leftOffset = base >= 10 ? '-3px' : '4px'
+                let startPosition = base >= 10 ? ['-1px', '5px'] : ['0', '0']
+                let endPosition = base >= 10 ? ['-3px', '1px'] : ['2px', '1px']
+                if (base >= 10) baseSvg.classList.add('small')
                 baseSvg.animate(
                     [
-                        { bottom: '5px', left: '-1px' },
+                        { left: startPosition[0] , bottom: startPosition[1]},
                         { opacity: 0 , offset: 0.5, },
-                        { bottom: '1px', left: leftOffset , opacity: 1 },
+                        { left: endPosition[0], bottom: endPosition[1] , opacity: 1 },
                     ], {
                     fill: "forwards",
                     duration: 330,
@@ -2853,12 +2841,13 @@ function hideSelector(e) {
                 const baseSvg = activeCube.querySelector('.pob-base-svg')
 
                 let base = puzzleData.variations.get('base') ?? 10
-                let leftOffset = base >= 10 ? '-3px' : '3px'
+                let startPosition = base >= 10 ? ['-1px', '5px'] : ['0', '0']
+                let endPosition = base >= 10 ? ['-3px', '1px'] : ['2px', '1px']
                 baseSvg.animate(
                     [
-                        { bottom: '1px', left: leftOffset , opacity: 1 },
+                        { left: endPosition[0] , bottom: endPosition[1] , opacity: 1 },
                         { opacity: 0 , offset: 0.7, },
-                        { bottom: '5px', left: '-1px' , opacity: 0 },
+                        { left: startPosition[0] , bottom: startPosition[1] , opacity: 0 },
                     ], {
                     fill: "forwards",
                     duration: 330,
@@ -3215,7 +3204,7 @@ function submitInput() {
     try {
         console.log(puzzleData)
         console.log(inputValues)
-        let nodes = [], goalNodes = [], parenthesisArr = [], showWarning
+        let nodes = [], goalNodes = [], parenthesisArr = [], goalString = [], showWarning
 
         for (let node of inputValues.solution.wrap.elements.flat()) {
             nodes.push(node)
@@ -3224,14 +3213,17 @@ function submitInput() {
         for (let node of inputValues.goal.wrap.elements.flat()) {
             goalNodes.push(node)
             parenthesisArr.push(translateName(node.dataset.type))
+            goalString.push(translateName(node.dataset.type))
         }
 
         console.log(nodes)
         let arrString = parenthesisArr.join("")
+        goalString = goalString.join("")
         if (!nodes.length) {
             notify('Input a Solution!', {duration: 1000, height: '40px', width: '160px'});
             console.log('No solution inputted'); return;
         }
+        console.log("GOLSTRING", goalString)
 
         let leftParenthesis = (arrString.match(/\(/g) || []).length
         let rightParenthesis = (arrString.match(/\)/g) || []).length
@@ -3590,7 +3582,7 @@ function submitInput() {
                         console.log(exponent)
                         if (copyBase) puzzleData.variations.set('base', copyBase)
                         let output = math.bignumber(base ** exponent)
-                        if (math.largerEq(math.abs(output), 10 ** 64)) showWarning = true
+                        if (math.largerEq(math.abs(output), math.bignumber(10 ** 64))) showWarning = true
                         console.log(output)
                         arr.push(output)
 
@@ -3611,7 +3603,11 @@ function submitInput() {
                 let evaluation = operation(arr)
                 // Return result and the input that gave the result
                 if (evaluation !== undefined) {
-                    if (math.largerEq(math.abs(evaluation), 10 ** 64)) showWarning = true
+                    if (math.typeOf(evaluation) !== 'Complex') {
+                        if (math.largerEq(math.abs(evaluation), math.bignumber(10 ** 64))) {
+                            showWarning = true
+                        }
+                    }
                     returnArr.push([evaluation, inputsArr[i]])
                 }
             };
@@ -3843,9 +3839,19 @@ function submitInput() {
                     let goalValue = goal[0]
                     let value = val[0]
                     if (puzzleData.variations.get('multipleOf')) {
-                        value = math.mod(value, puzzleData.variations.get('multipleOf'))
-                        goalValue = math.mod(goalValue, puzzleData.variations.get('multipleOf'))
+                        if (math.typeOf(value) === 'Complex') {
+                            value = math.complex(math.mod(math.re(value), puzzleData.variations.get('multipleOf')), math.im(value))
+                        } else {
+                            value = math.mod(value, puzzleData.variations.get('multipleOf'))
+                        }
+                        if (math.typeOf(goalValue) === 'Complex') {
+                            goalValue = math.complex(math.mod(math.re(goalValue), puzzleData.variations.get('multipleOf')), math.im(goalValue))
+                        } else {
+                            goalValue = math.mod(goalValue, puzzleData.variations.get('multipleOf'))
+                        }
                     }
+                    console.log(goalValue)
+                    console.log(value)
                     if (math.equal(goalValue, value)) {
                         answer = val
                         goalAnswer = goal
@@ -4039,8 +4045,10 @@ function submitInput() {
                     [{ opacity: 0 , bottom: '-5px', left: '-4px' }], {
                     fill: "forwards",
                 });
+                let base = puzzleData.variations.get('base') ?? 10
+                let endPosition = base >= 10 ? ['-3px', '1px'] : ['2px', '1px']
                 baseSvg.animate(
-                    [{ bottom: '1px', left: '-3px' , opacity: 1 }], {
+                    [{ left: endPosition[0] , bottom: endPosition[1] , opacity: 1 }], {
                     fill: "forwards",
                 });
                 exponentDisplay.animate(
@@ -4058,9 +4066,29 @@ function submitInput() {
         // Paragraph
         const evaluationParagraph = document.createElement('p')
         evaluationParagraph.innerText = `Your solution evaluates to ${answer[0]}`
-        if (puzzleData.variations.get('multipleOf') && math.abs(answer[0] > puzzleData.variations.get('multipleOf'))) {
-            evaluationParagraph.innerText += ` and reduces down to ${answer[0] % puzzleData.variations.get('multipleOf')}`
+        if (puzzleData.variations.get('multipleOf')) {
+            switch (math.typeOf(answer[0])) {
+                case 'Complex': // Mod down real part of complex number
+                    console.log("1")
+                    let realComp = math.re(answer[0])
+                    if (math.largerEq(realComp, puzzleData.variations.get('multipleOf')) || math.isNegative(realComp)) {
+                        newNumber = math.complex(math.mod(realComp, puzzleData.variations.get('multipleOf')), math.im(answer[0]))
+                        evaluationParagraph.innerText += ` and reduces down to ${newNumber}`
+                    }; break;
+                case 'BigNumber':
+                    console.log("2")
+                    if (math.largerEq(answer[0], puzzleData.variations.get('multipleOf')) || math.isNegative(answer[0])) {
+                        evaluationParagraph.innerText += ` and reduces down to ${math.mod(answer[0], puzzleData.variations.get('multipleOf'))}`
+                    }; break;   
+                case 'number':
+                    default:
+                    console.log("3")
+                    if (answer[0] >= puzzleData.variations.get('multipleOf') || answer[0] < 0) {
+                        evaluationParagraph.innerText += ` and reduces down to ${answer[0] % puzzleData.variations.get('multipleOf')}`
+                    }
+            }
         }
+        
         evaluationParagraph.classList.add('evaluation-paragraph')
         resultInputContainer.append(evaluationParagraph)
 
@@ -4151,7 +4179,7 @@ function submitInput() {
                                     let base = puzzleData.variations.get('base') ?? 10
                                     if (arr[j].charAt(1) === '1') base *= 1
                                     if (arr[j].charAt(2) === '1') base = 1 / base
-                                    string += `${base}^ {${arr[j].slice(3)}}`
+                                    string += `{${base}^ {${arr[j].slice(3)}}}`
                                     break;
                                 default:
                                     console.log(string)
@@ -4270,8 +4298,27 @@ function submitInput() {
         const goalEvaluationParagraph = document.createElement('p')
         console.log(goalAnswer)
         goalEvaluationParagraph.innerText = `Your goal evaluates to ${goalAnswer[0]}`
-        if (puzzleData.variations.get('multipleOf') && math.abs(goalAnswer[0]) > puzzleData.variations.get('multipleOf')) {
-            goalEvaluationParagraph.innerText += ` and reduces down to ${goalAnswer[0] % puzzleData.variations.get('multipleOf')}`
+        if (puzzleData.variations.get('multipleOf')) {
+            switch(math.typeOf(goalAnswer[0])) {
+                case 'Complex': // Mod down real part of complex number
+                    let realComp = math.re(goalAnswer[0])
+                    console.log("1")
+                    if (math.largerEq(realComp, puzzleData.variations.get('multipleOf')) || math.isNegative(realComp)) {
+                        newNumber = math.complex(math.mod(realComp, puzzleData.variations.get('multipleOf')), math.im(goalAnswer[0]))
+                        goalEvaluationParagraph.innerText += ` and reduces down to ${newNumber}`
+                    }; break;
+                case 'BigNumber':
+                    console.log("2")
+                    if (math.largerEq(goalAnswer[0], puzzleData.variations.get('multipleOf')) || math.isNegative(goalAnswer[0])) {
+                        goalEvaluationParagraph.innerText += ` and reduces down to ${math.mod(goalAnswer[0], puzzleData.variations.get('multipleOf'))}`
+                    }; break;
+                case 'number':
+                default:
+                    console.log("3")
+                    if (goalAnswer[0] >= puzzleData.variations.get('multipleOf') || goalAnswer[0] < 0) {
+                        goalEvaluationParagraph.innerText += ` and reduces down to ${goalAnswer[0] % puzzleData.variations.get('multipleOf')}`
+                    }
+            }
         }
         goalEvaluationParagraph.classList.add('evaluation-paragraph')
         resultInputContainer.append(goalEvaluationParagraph)
@@ -4280,6 +4327,7 @@ function submitInput() {
         const goalBreakdownContainer = document.createElement('div')
         const goalBreakdownContent = document.createElement('div')
         createBreakdown(goalBreakdownContainer, goalBreakdownContent, goalAnswer, {goalButton: true, scrollOffset: 348})
+
         
 
 

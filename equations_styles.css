@@ -492,17 +492,18 @@ header h1 {
 }
 .pob-base-svg {
     width: 34px;
-    height: 30px;
+    height: 34px;
 
     position: absolute;
-    bottom: 5px;
-    left: -1px;
-
+    
     opacity: 0;
 }
 .pob-base-svg.small {
     width: 30px;
     height: 30px;
+
+    bottom: 5px;
+    left: -1px;
 }
 .pob-exponent {
     display: flex;
@@ -1494,9 +1495,9 @@ header h1 {
         width: 92%;
     }
 }
-/* div.mobile-console {
+div.mobile-console {
     display: none !important;
 }
 div.mobile-console.shown {
     display: flex !important;
-} */
+}
