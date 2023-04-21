@@ -371,15 +371,17 @@ onmessage = (e) => {
             };
         };
 
-        (function generateGoal() {
+        function generateGoal() {
             
             console.group("GENERATING GOAL: ")
+            goalArr = []
 
             if (setGoal) {
                 goalArr = setGoal;
-                console.log(setGoal);
+                setGoal = undefined;
                 return;
             }
+
 
             let resourcesArr = cubesArr.flat();
             let numeralsArr = resourcesArr.filter(val => typeof val === "number");
@@ -440,8 +442,8 @@ onmessage = (e) => {
                     coloredNumerals = deleteFirstArrItem(coloredNumerals, cube);
                 };
             };
-    
-            //ADDING CUBES TO THE GOAL
+
+            // Adding cubes to the goal
 
             let randomNumerals = randomSort(numeralsArr);
             if (variationsMap.get('base')) randomNumerals = randomNumerals.filter(val => val < variationsMap.get('base'))
@@ -549,15 +551,19 @@ onmessage = (e) => {
             // throw "STOP"
 
             // console.log(modifiedCubesArr);
-        })();
+        }
+        generateGoal()
 
         let operationRegex = /[+−x÷^]/
         const goalValues = [], goalFlags = [], goalModValues = [];
 
         // Calculate Goal
 
-        (function calcGoal(arr = goalArr, init = true) {
+        function calcGoal(arr = goalArr, init = true) {
             if (init) {
+                goalValues.length = 0
+                goalFlags.length = 0
+                goalModValues.length = 0
                 // goalArr.length = 0
                 // variationsMap.set('factorial', undefined)
                 // variationsMap.set('base', 8)
@@ -584,7 +590,15 @@ onmessage = (e) => {
                 };
                 let values = calcGoal(newGoalArr, false)
                 
-                for (let val of values[0]) goalValues.push(val)
+
+                for (let val of values[0]) {
+                    if (math.equal(val, 0)) {
+                        generateGoal()
+                        calcGoal()
+                        return;
+                    }
+                    goalValues.push(val)
+                }
                 for (let flag of values[1]) goalFlags.push(flag)
                 if (variationsMap.get('multipleOf')) {
                     for (let val of values[0]) {
@@ -592,6 +606,11 @@ onmessage = (e) => {
                             goalModValues.push(val % variationsMap.get('multipleOf'))
                         } else {
                             goalModValues.push(Number(val % BigInt(variationsMap.get('multipleOf'))))
+                        }
+                        if (math.equal(val, 0)) {
+                            generateGoal()
+                            calcGoal()
+                            return;
                         }
                     }
                 }
@@ -668,7 +687,8 @@ onmessage = (e) => {
                 }
                 return [answer, flag];
             }
-        }());
+        }
+        calcGoal()
         // throw "STOP"
         console.log(goalValues)
         console.log(goalFlags)

@@ -338,9 +338,9 @@ const cursor = document.createElement('div')
 cursor.id = 'cursor'
 cursor.classList.add('blink-animation');
 const settingsIcon = createSvg('settings');
+settingsIcon.id = 'settings-ico'
 const header = document.querySelector('#header')
 header.addEventListener('click', () => menuBackground.click())
-settingsIcon.id = 'settings-ico'
 header.append(settingsIcon)
 
 const variationsArrowBox = document.querySelector('#variations-arrow-box')
@@ -449,7 +449,12 @@ puzzleParameters = {
     setForbidden: null,
 }
 
-// puzzleParameters.setVariations = []
+// puzzleParameters.setGoal = 
+// [
+//     { cube: 1, color: 'red', orientation: 'up' },
+//     { cube: '−', color: 'red', orientation: 'up' },
+//     { cube: 1, color: 'red', orientation: 'up' }
+// ]
 
 
 
@@ -2929,13 +2934,13 @@ function hideSelector(e) {
 const settings = {
     headerText: 'Settings',
     genNewPuzzle: false,
-    forceVariations: []
+    forceVariations: [],
 }
+
 const settingsContainer = document.createElement('settings-container')
 settingsContainer.id = 'settings-container'
 header.append(settingsContainer)
 settingsContainer.addEventListener('click', (e) => e.stopPropagation())
-
 
 const settingsHeader = document.createElement('div')
 settingsHeader.id = 'settings-header'
@@ -3068,15 +3073,7 @@ function createToggle(label, action) {
 
     toggle.addEventListener('click', () => action(toggle))
 
-    return toggleContainer
-
-    // <li class="settings-toggle">
-    //     <p>Force Symmetric Difference</p>
-    //     <div id="force-symmetric-difference" class="toggle" data-type="force-symmetric-difference">
-    //         <div class="toggle-switch"></div>
-    //     </div>
-    // </li>
-
+    return toggleContainer;
 }
 function createCounter(label, id, action, parameters = {}) {
     const counter = document.createElement('li');
@@ -3162,7 +3159,6 @@ function createCheckbox(text, type) {
     mainPage.classList.add('settings-page-1')
 
     const pages = [
-        // ['#card-view-button', '#settings-card-view', 'Card View (Testing)'],
         ['#variations-button', '#settings-variations', 'Variations'],
     ]
     for (let page of pages) {
@@ -3618,7 +3614,7 @@ function submitInput() {
                 let evaluation = operation(arr)
                 // Return result and the input that gave the result
                 if (evaluation !== undefined) {
-                    if (math.typeOf(evaluation) !== 'Complex') {
+                    if (math.typeOf(evaluation) !== 'Complex' && math.isInteger(evaluation)) {
                         if (math.largerEq(math.abs(evaluation), math.bignumber(10 ** 64))) {
                             showWarning = true
                         }

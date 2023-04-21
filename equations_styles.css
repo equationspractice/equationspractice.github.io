@@ -92,7 +92,6 @@ header h1 {
     user-select: none;
     position: absolute;
     font-size: 25px;
-    /* margin: auto; */
     align-self: center;
 }
 #settings-ico {
@@ -107,7 +106,6 @@ header h1 {
     transform-origin: 50% 50%;
     transform: rotate(5deg);
 }
-
 #settings-container {
     position: absolute;
     right: 5px;
@@ -124,7 +122,6 @@ header h1 {
     flex-direction: column;
     user-select: none;
 }
-
 #settings-container.shown {
     visibility: visible;
     opacity: 1;
@@ -221,13 +218,11 @@ header h1 {
     background-color: whitesmoke;
     width: 100%;
     height: 48px;
-    /* line-height: 48px; */
     padding-left: 10px;
     border-top: 1px solid #dadada;
     border-bottom: 1px solid #dadada;
     display: flex;
     align-items: center;
-    /* font-size: 16px; */
     transition: background-color 50ms
 }
 
@@ -294,7 +289,6 @@ header h1 {
     border-top: none;
     margin: 0 0;
     height: 46px;
-    /* line-height: 46px; */
     cursor: pointer;
     position: relative;
 }
@@ -325,7 +319,6 @@ header h1 {
 #settings-nodes-container .settings-counter {
     position: relative;
     height: 62px;
-    /* line-height: 62px; */
 }
 .settings-counter input {
     width: 30px;
@@ -1498,6 +1491,10 @@ header h1 {
     }
     #computer-input-container {
         width: 92%;
+    }
+    #new-result {
+        width: 100%;
+        height: calc(100vh - 50px)
     }
 }
 div.mobile-console {
