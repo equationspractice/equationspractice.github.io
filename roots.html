@@ -301,20 +301,20 @@
             <ul>
                 <li>\((77 - 5)\sqrt{i}\) <em>(black exponent called, 7 cubes are block)</em></li>
             </ul>
-            <p>Again, we want the index of our goal to compute to multiple of 4. Because black exponent is called, let's interpret the goal as \((7^{7} - 5)\sqrt{i}\). To restate, in order to solve these roots, we reduce the index by \(4\) and \(8\) to find the remainder. Well, here, our index is an exponential expression, and the way we find the remainder of an exponential expression is... cycling.</p>
-            <p>To pull this off, we only cycle the exponent \((7^{7})\), and then we'll subtract our \(5\) from the result. You'll also want to cycle with \(8\) first with this strategy. That being said, here's the cycle for \(7^{7}\) mod \(8\):</p>
+            <p>Again, we want the index of our goal to compute to multiple of 4 by default. However, because black exponent is called, let's interpret the goal as \((7^{7} - 5)\sqrt{i}\). Now it's time to solve the expression. To restate the solving process above, we reduce the index by \(4\) and \(8\) to find the remainder. Well, here, our index is an exponential expression, and the way we find the remainder of an exponential expression is... cycling.</p>
+            <p>To pull this off, we start by cycling the exponent \((7^{7})\). Usually, you'll want to cycle with a multiple of \(8\) with this strategy. That being said, here's the cycle for \(7^{7}\) mod \(8\):</p>
             <ul>
                 <li>\(7^1 = 7\)</li>
                 <li>\(7^2 = 49\) mod \(8 ≡ 1\)</li>
             </ul>
             <p>Our cycle length is \(2\), so once we reduce our exponent, we get \(7^7 ≡ 7\).</p>
             <p>Now we can substitute everything back into our index. \((7^{7} - 5)\sqrt{i}\) \(=\) \((7 - 5)\sqrt{i}\) \(=\) \(\sqrt[2]{i}\). We can effectively solve for \(\sqrt{i}\). </p>
-            <p>The reason we cycle with \(8\) first is because we're technically cycling by \(4\) at the same time (\(8\) is a multiple of \(4\)). Alternatively, if you can predict that your index will be an <em>odd</em> number, you'll get your answer faster if you cycle with \(4\). (because \(4k \pm 1\) is always odd, whereas \(8k \pm 2\) is always even).</p>
-            <p>As powerful as strategy this is, the only way to force our opponents to use it is to set our index as multiple of \(4\). To force this strategy for <em>all</em> indexes, we make our first cube <em>upsidedown</em>:</p>
+            <p>The reason we cycle with \(8\) first is because we're technically cycling by \(4\) at the same time (\(8\) is a multiple of \(4\)). Alternatively though, if you can predict that your index will be an <em>odd</em> number, you might get your answer faster if you cycle with \(4\) instead. (this is because \(4k \pm 1\) is always odd, whereas \(8k \pm 2\) is always even).</p>
+            <p>As powerful as strategy this is, the only way to force our opponents to use it is to set our index as multiple of \(4\). Otherwise, the general rule can be used to solve the goal instead. If we want to force this strategy for <em>all</em> indexes, a technique we can do is to have our first cube be <em>upsidedown</em>:</p>
             <ul>
                 <li>\((39-2)\sqrt{i}\) <em>(upsidedown \(3\))</em></li>
             </ul>
-            <p>Because of the upsidedown \(3\), our opponent <em>has</em> to interpret the goal as \(((-3)^{9}-2)\sqrt{i}\). Let's solve this real quick. Our index is be odd here, but we'll cycle with \(8\) anyways for demonstration purposes. Cycling \((-3)^{9}\) with a \(k\) of \(8\):</p>
+            <p>Because of the upsidedown \(3\), our opponent <em>has</em> to interpret the goal as \(((-3)^{9}-2)\sqrt{i}\). Let's solve this real quick. We'll cycle with a multiple of \(8\) for demonstration purposes, but because our index is odd here, cycling with a multiple of \(4\) would also yield the same answer. Regardless, cycling \((-3)^{9}\) with a \(k\) of \(8\):</p>
             <ul>
                 <li>\((-3)^1 = -3\)</li>
                 <li>\((-3)^2 = 9\) mod \(8 ≡ 1\)</li>
