@@ -301,7 +301,7 @@
             <ul>
                 <li>\((77 - 5)\sqrt{i}\) <em>(black exponent called, 7 cubes are block)</em></li>
             </ul>
-            <p>Again, we want the index of our goal to compute to multiple of 4. Because black exponent is called, let's interpret the goal as \((7^{7} - 5)\sqrt{i}\). Again, in order to solve these roots, we reduce the index by \(4\) and \(8\) to find the remainder. Well, here, our index is an expoential expression, and the way we find the remainder of an exponential expression is... cycling.</p>
+            <p>Again, we want the index of our goal to compute to multiple of 4. Because black exponent is called, let's interpret the goal as \((7^{7} - 5)\sqrt{i}\). Again, in order to solve these roots, we reduce the index by \(4\) and \(8\) to find the remainder. Well, here, our index is an exponential expression, and the way we find the remainder of an exponential expression is... cycling.</p>
             <p>To pull this off, we only cycle the exponent \((7^{7})\), and then we'll subtract our \(5\) from the result. With this strategy, you'll want to cycle with \(8\) first. That being said, here's the cycle for \(7^{7}\) mod \(8\):</p>
             <ul>
                 <li>\(7^1 = 7\)</li>
@@ -320,7 +320,7 @@
                 <li>\(-3^2 = 9\) mod \(8 ≡ 1\)</li>
             </ul>
             <p>Our cycle length is \(2\) again, so once we reduce our exponent, we get \(-3^9 ≡ -3\).</p>
-            <p>Substitute everything back in again. \((-3^{9} - 2)\sqrt{i}\) \(=\) \((-3 - 2)\sqrt{i}\) \(=\) \(\sqrt[-5]{i}\) \(=\) \(\sqrt[5]{-i}\) (In that last step, remember our rule for negative indexes from earlier). Our index, \(5\), is a multiple of \(4k + 1\), so our root reduces down to \(-i\).</p>
+            <p>Substituting everything back in again: \((-3^{9} - 2)\sqrt{i}\) \(=\) \((-3 - 2)\sqrt{i}\) \(=\) \(\sqrt[-5]{i}\) \(=\) \(\sqrt[5]{-i}\) (In that last step, remember our rule for negative indexes). Our index, \(5\), is a multiple of \(4k + 1\), so our root reduces down to \(-i\).</p>
             <h4>Decimal<span class="impact moderate"> &mdash; Impact: </span></h4>
             <p><em>*More development needed</em></p>
             <h4>Log<span class="impact none"> &mdash; Impact: </span></h4>
