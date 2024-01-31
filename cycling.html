@@ -20,15 +20,16 @@
         }
         header {
             position: relative;
-            /* height: 54px; */
-            height: min(13vw, 54px);
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* line-height: 50px; */
-            border-bottom: 1px solid grey;
+            width: 100%;
+            border-bottom: 1px solid gray;
+            background-color: whitesmoke;
+            box-shadow: 0 0 10px rgb(0 0 0 / 10%);
             transition: 0.25s cubic-bezier(.4,0,.2,1);
-            z-index: 5;
+            z-index: 6;
         }
         header.dark {
             background-color: rgb(227, 227, 227);
@@ -421,7 +422,6 @@
         }
         .col1 {
             background-color: rgb(130, 253, 228);
-            /* background-color: rgb(132, 255, 255); */
         }
         .col2 {
             background-color: rgb(119, 255, 137);
@@ -1026,15 +1026,15 @@
                             duration: 250,
                         });
                     }
-                }, 150)
+                }, 150);
                 submitButton.animate(
-                [
-                {width: '160px', height: '36px', offset: 0.25, easing: 'ease',},
-                {width: '398px', height: '60px', easing: 'ease',}
-                ], {
-                fill: "forwards",
-                duration: 500,
-            });
+                    [
+                    {width: '160px', height: '36px', offset: 0.25, easing: 'ease',},
+                    {width: '398px', height: '60px', easing: 'ease',}
+                    ], {
+                    fill: "forwards",
+                    duration: 500,
+                });
             } else {
                 setTimeout(() => {transitioning = false}, 325)
                 setTimeout(() => {submitButton.classList.toggle('expand')}, 300)

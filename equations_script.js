@@ -9,7 +9,7 @@ function logTime(message = "") {
     let stopTimer = new Date();
     console.log(message + (stopTimer.getTime() - setTimer.getTime()) / 1000 + " SECONDS")
 };
-function getRandomNumber(min, max) {
+function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max + 1 - min)) + min;
 };
 function randomSort(input) {
@@ -28,7 +28,7 @@ function deleteFirstArrItem(array, item) {
     return array.slice(0, index).concat(array.slice(index + 1));
 };
 function randomArrayValue(arr) {
-    return arr[getRandomNumber(0, arr.length - 1)]
+    return arr[getRandomInt(0, arr.length - 1)]
 };
 function compareArr(arr1, arr2) {
     if (arr1.length !== arr2.length) return false;
@@ -615,7 +615,7 @@ function newPuzzle() {
         };
 
         function findColorIndex(cube, ...index) {
-            let tryIndex = getRandomNumber(0, 3)
+            let tryIndex = getRandomInt(0, 3)
             if (index.includes(tryIndex)) {
                 if (index.length === 4) return "NOT FOUND";
                 return findColorIndex(cube, ...index);
@@ -635,7 +635,7 @@ function newPuzzle() {
         console.log(requiredArr)
 
         // Occasionally remove a cube from required
-        if (getRandomNumber(0, 2)) requiredArr = deleteFirstArrItem(requiredArr, randomArrayValue(requiredArr.toString()))
+        if (getRandomInt(0, 2)) requiredArr = deleteFirstArrItem(requiredArr, randomArrayValue(requiredArr.toString()))
         console.log(requiredArr)
 
         // Place cubes from required arr into required

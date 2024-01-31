@@ -650,21 +650,10 @@ header h1 {
 }
 #solution-container:hover, #solution-container.active, #solution-container.hover, #solution-container.selector-active {
     background-color: rgb(26, 93, 218);
-    /* background-color: rgb(80, 19, 38); */
-    transition-duration: 0s;
 }
 #goal-container:hover, #goal-container.active, #goal-container.hover, #goal-container.selector-active {
     background-color: rgb(26, 93, 218);
-    /* background-color: rgb(80, 19, 38); */
-    transition-duration: 0s;
 }
-
-/* #solution-container.hover {
-    background-color: rgb(26, 93, 218);
-} */
-/* #solution-container:not(.active):active {
-    background-color: rgb(24, 90, 211);
-} */
 #solution-bar {
     position: relative;
     bottom: 25px;
