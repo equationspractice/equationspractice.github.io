@@ -228,7 +228,7 @@
             <p>As an example, lets try to solve the goal \(\sqrt[86]{i}\). We'll first reduce the index (\(86\)) by a multiple of \(4\), which nets us a remainder of \(2\) (or \(-2\)). On the chart above, this corresponds with the \(4k + 2\) rule. However, our rule for \(4k + 2\) is only defined for a radicand of \(-1\), so we'll continue by reducing our index by multiples of \(8\). Reducing \(86\) by a multiple of \(8\) gives us a remainder of \(6\) (or \(-2\)), which corresponds with the \(8k - 2\) rule on the chart above. From our general rule, this means we can solve for \(\sqrt{i}\), or if you interpret the \(i\) in the goal as upsidedown, we can solve for \(\sqrt{-i}\).</p>
             <p>The second method we'll review is arguably identical to the first method, so you can simply imagine it as a different way to do the first method. Instead of reducing the index by multiples of \(4\) and \(8\), we instead find the nearest multiple of \(4\) and \(8\) to our index and calculate the difference between our index and that multiple. This difference is going to act as our remainder.</p>
             <p>Going back to the \(\sqrt[86]{i}\) problem, the nearest multiple of \(4\) to \(86\) is \(84\). The difference between \(86\) and \(84\) is \(2\), so our remainder is \(2\) here. Since a remainder of \(2\) paired with a radicand of \(i\) doesn't fit any of our general rules, we move on by finding the nearest multiple of \(8\), which is \(88\). The difference between \(86\) and \(88\) is \(-2\) (be careful with the sign here, \(86\) is <strong>2 less</strong> than a multiple of \(8\)), which corresponds on our chart to \(8k - 2\).</p>
-            <p>If it wasn't already clear, "nearest multiple" is a very loose term here. For \(86\), We could've chosen our nearest multiple of \(8\) to be \(80\), which would net us a remainder of \(6\). Nevertheless, this still corresponds to the \(8k - 2\) rule on the chart.</p>
+            <p>If it wasn't already clear, "nearest multiple" is a very loose term here. For \(86\), we could've chosen our nearest multiple of \(8\) to be \(80\), which would net us a remainder of \(6\). Nevertheless, this still corresponds to the \(8k - 2\) rule on the chart.</p>
             <p>There are of course some ways to optimize this strategy. Since our rules of \(8k + 4\) and \(4k + 2\) aren't defined when our radicand is \(i\), we don't have to check for these rules when our radicand is \(i\). Likewise, when our radicand is \(-1\), we only have to check the \(8k + 4\) and \(4k + 2\) rules. We do have to be careful when our radicand is \(-1\) however. Although \(\sqrt[19]{-1}\) doesn't fit any of our rules, \(-1\) raised to any odd power is still \(-1\), so a solution to the root above would be \(-1\).</p>
             <p>Using the information above, here's a table listing the first \(50\) roots of \(i\) and \(-1\), as well as their corresponding rule.</p>
             <div style="text-align: center; margin: -12px 0 24px;">
@@ -260,13 +260,13 @@
             </ul>
             <p>The idea is to set a goal with the index in the form <em>some number</em> \(+1\) or \(- 1\), so that when you compute the index, you get a multiple of \(4\) (in this case, \(64\)). By default this goal has no trivial solutions, but we can use Powers of the Base to modify the index.</p>
             <p>Assuming our base is still \(10\), let's interpret the \(1\) as \(10^{1}\). Our goal becomes \((63+10)\sqrt{i}\), or \(\sqrt[73]{i}\). This new index falls into \(4k + 1\), so our goal simply reduces to \(i\).</p>
-            <p>Although usually not necessary, we can also rewrite the \(1\) with higher powers of \(10\) to give alternate answers. Interpreting the \(1\) as \(10^{2}\), or \(100\), gives us \((63+100)\sqrt{i}\), which becomes \(\sqrt[163]{i}\) and reduces to \(-i\) \((4k - 1)\). In most cases (such as this one), higher powers will only change the sign of the goal.</p>
-            <p>If Base is called, remember our base in Powers of the Base must reflect the new base. For example, if Base \(11\) is called, \(1\) must be interpreted as \(11^{n}\) instead of \(10^{n}\). Our original goal, \((63+1)\sqrt{i}\), can be interpreted as \((63+11)\sqrt{i}\), or \(\sqrt[74]{i}\). This reduces down to \(\sqrt{i}\) (with \(8k + 2\)).</p>
+            <p>Although usually not necessary, we can also rewrite the \(1\) with higher powers of \(10\) to give alternate answers. Interpreting the \(1\) as \(10^{2}\), or \(100\), gives us \((63+100)\sqrt{i}\), which becomes \(\sqrt[163]{i}\) and reduces to \(-i\) (multiple of \(4k - 1\)). In most cases (such as this one), higher powers will only change the sign of the goal.</p>
+            <p>If Base is called, remember that our base in Powers of the Base must reflect the new base. For example, if Base \(11\) is called, \(1\) must be interpreted as \(11^{n}\) instead of \(10^{n}\). Our original goal, \((63+1)\sqrt{i}\), can be interpreted as \((63+11)\sqrt{i}\), or \(\sqrt[74]{i}\). This reduces down to \(\sqrt{i}\) (multiple of \(8k + 2\)).</p>
             <p></p>
             <h4>Base <em>M</em><span class="impact moderate"> &mdash; Impact: </span></h4>
             <p>This variation doesn't open up any unique strategies, but it will require you to play more carefully.</p>
-            <p>Before solving the goal, make sure you convert your indexes first. With Base \(12\), a goal like \(\sqrt[76]{i}\) converts to \(\sqrt[90]{i}\), which reduces down to \(\sqrt{i}\).</p>
-            <p>If for some reason, Decimal is called with Base \(12\), be wary that \(3\) cube numerals are now allowed, and that the \(\sqrt{\;\;}\) cube can be interpreted as the digit \(11\). An attentive opponent could interpret \(\sqrt[76]{i}\) as \(1091i\) \((7 \times 144 + 6 \times 12 + 11)\), which although is still difficult to solve, it's best to stifle any alternate interpretations. To avoid this, set the index as its own expression and separate it from the root using parenthesis:</p>
+            <p>Before solving the goal, make sure you convert your indexes first. With Base \(12\), a goal like \(\sqrt[76]{i}\) converts to \(\sqrt[90]{i}\), which reduces down to \(\sqrt{i}\) (multiple of \(8k + 2\)).</p>
+            <p>If for some reason, Decimal is called with Base \(12\), be wary that \(3\) cube numerals are now allowed, and that the \(\sqrt{\;\;}\) cube can be interpreted as the digit \(11\). An attentive opponent could interpret \(\sqrt[76]{i}\) as \(1091i\) \((7 \times 144 + 6 \times 12 + 11)\), which, although is still difficult to solve, it's best to stifle any alternate interpretations. To avoid this, set the index as its own expression and separate it from the root using parenthesis:</p>
             <ul>
                 <li>\((79-3)\sqrt{i}\)</li>
                 <li>\((19\times4)\sqrt{i}\)</li>
@@ -284,8 +284,8 @@
             <ul>
                 <li>\((62+2)\sqrt{i}\)</li>
             </ul>
-            <p>We're going to insert the factorial behind the 62. Since \(62!\) is a multiple of \(8\), this goal must fall into the \(8k + 2\) pattern, meaning that it reduces to \(\sqrt{i}\).</p>
-            <p>Heres a list of some possible goals you can set with this variation and their corresponding rule. You might find this list to be closely related to the remainder chart above:</p>
+            <p>We're going to insert the factorial behind the 62. Since \(62!\) is a multiple of \(8\), this goal falls into the \(8k + 2\) pattern, meaning that it reduces to \(\sqrt{i}\).</p>
+            <p>Heres a list of some possible goals you can set with this variation and their corresponding rule. You might find this list to be closely related to the remainder chart from an earlier section:</p>
             <ul>
                 <li>\(8k + 2\): \((n!+2)\sqrt{i}\) <em>or</em> \((n!-6)\sqrt{i}\)</li>
                 <li>\(8k - 2\): \((n!+6)\sqrt{i}\) <em>or</em> \((n!-2)\sqrt{i}\)</li>
@@ -301,8 +301,8 @@
             <ul>
                 <li>\((77 - 5)\sqrt{i}\) <em>(black exponent called, 7 cubes are block)</em></li>
             </ul>
-            <p>Again, we want the index of our goal to compute to multiple of 4. Because black exponent is called, let's interpret the goal as \((7^{7} - 5)\sqrt{i}\). Again, in order to solve these roots, we reduce the index by \(4\) and \(8\) to find the remainder. Well, here, our index is an exponential expression, and the way we find the remainder of an exponential expression is... cycling.</p>
-            <p>To pull this off, we only cycle the exponent \((7^{7})\), and then we'll subtract our \(5\) from the result. With this strategy, you'll want to cycle with \(8\) first. That being said, here's the cycle for \(7^{7}\) mod \(8\):</p>
+            <p>Again, we want the index of our goal to compute to multiple of 4. Because black exponent is called, let's interpret the goal as \((7^{7} - 5)\sqrt{i}\). To restate, in order to solve these roots, we reduce the index by \(4\) and \(8\) to find the remainder. Well, here, our index is an exponential expression, and the way we find the remainder of an exponential expression is... cycling.</p>
+            <p>To pull this off, we only cycle the exponent \((7^{7})\), and then we'll subtract our \(5\) from the result. You'll also want to cycle with \(8\) first with this strategy. That being said, here's the cycle for \(7^{7}\) mod \(8\):</p>
             <ul>
                 <li>\(7^1 = 7\)</li>
                 <li>\(7^2 = 49\) mod \(8 ≡ 1\)</li>
@@ -314,13 +314,13 @@
             <ul>
                 <li>\((39-2)\sqrt{i}\) <em>(upsidedown \(3\))</em></li>
             </ul>
-            <p>Because of the upsidedown \(3\), our opponent <em>has</em> to interpret the goal as \((-3^{9}-2)\sqrt{i}\). Let's solve this real quick. Our index is be odd here, but we'll cycle with \(8\) anyways for demonstration purposes. Cycling \(-3^{9}\) with a \(k\) of \(8\):</p>
+            <p>Because of the upsidedown \(3\), our opponent <em>has</em> to interpret the goal as \(((-3)^{9}-2)\sqrt{i}\). Let's solve this real quick. Our index is be odd here, but we'll cycle with \(8\) anyways for demonstration purposes. Cycling \((-3)^{9}\) with a \(k\) of \(8\):</p>
             <ul>
-                <li>\(-3^1 = -3\)</li>
-                <li>\(-3^2 = 9\) mod \(8 ≡ 1\)</li>
+                <li>\((-3)^1 = -3\)</li>
+                <li>\((-3)^2 = 9\) mod \(8 ≡ 1\)</li>
             </ul>
-            <p>Our cycle length is \(2\) again, so once we reduce our exponent, we get \(-3^9 ≡ -3\).</p>
-            <p>Substituting everything back in again: \((-3^{9} - 2)\sqrt{i}\) \(=\) \((-3 - 2)\sqrt{i}\) \(=\) \(\sqrt[-5]{i}\) \(=\) \(\sqrt[5]{-i}\) (In that last step, remember our rule for negative indexes). Our index, \(5\), is a multiple of \(4k + 1\), so our root reduces down to \(-i\).</p>
+            <p>Our cycle length is \(2\) again, so once we reduce our exponent, we get \((-3)^9 ≡ -3\).</p>
+            <p>Substituting everything back in again: \(((-3)^{9} - 2)\sqrt{i}\) \(=\) \((-3 - 2)\sqrt{i}\) \(=\) \(\sqrt[-5]{i}\) \(=\) \(\sqrt[5]{-i}\) (In that last step, remember our rule for negative indexes). Our index, \(5\), is a multiple of \(4k + 1\), so our root reduces down to \(-i\).</p>
             <h4>Decimal<span class="impact moderate"> &mdash; Impact: </span></h4>
             <p><em>*More development needed</em></p>
             <h4>Log<span class="impact none"> &mdash; Impact: </span></h4>

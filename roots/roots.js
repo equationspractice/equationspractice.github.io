@@ -124,9 +124,6 @@ function predict(index, angle) {
 }
 
 for (let index = 2; index <= 143; index++) {
-// for (let index = 2; index <= 100; index++) {
-// for (let index = 1; index <= 100; index += 4) {
-    // continue;
 
     let subheadings = []
 
@@ -144,9 +141,6 @@ for (let index = 2; index <= 143; index++) {
 
         let usefulAngles = [45, 135, 225, 315, 30, 60, 120, 150, 210, 240, 300, 330, 0, 90, 180, 270, 360]
         let finalAngles = angles.filter((angle) => usefulAngles.includes(angle))
-        
-        // console.log(angles)
-        // console.log(finalAngles)
 
         if (finalAngles.length) {
 
@@ -157,10 +151,8 @@ for (let index = 2; index <= 143; index++) {
             let predictedAngles = predict(index, angle)
             let match = compareArr(finalAngles, predictedAngles) ? 'Match' : 'No Match'
 
-            // if (match == 'No Match') {
             console.log(`Index: ${index} | Angle: ${angle} |`, finalAngles, predictedAngles, match)
-            // }
-        
+            
             // let paragraph = document.createElement('li')
             
             // let radicand = angleElements.get(angle)

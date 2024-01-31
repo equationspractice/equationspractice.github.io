@@ -148,8 +148,8 @@ a#table-toggle {
 }
 table{
     border-radius: 10px;
-    background-color: rgb(249, 249, 249); /* Light grey background */
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow for a 3D effect */
+    background-color: rgb(249, 249, 249);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
     margin: 0 14px 30px;
     border-collapse: collapse;
     text-align: center;
@@ -215,16 +215,4 @@ span.impact.none::after {
     main div.info-box {
         padding: 16px 24px;
     }
-    /* main p {
-        font-size: 18px;
-    }
-    main ul {
-        font-size: 18px;
-    }
-    main div.note {
-        font-size: 18px;
-    }
-    div.rule_container {
-        font-size: 18px
-    } */
 }
