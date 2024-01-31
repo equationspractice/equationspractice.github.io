@@ -164,10 +164,10 @@ table, th, td {
     border: 1px solid rgb(221, 221, 221);
 }
 th {
-    font-size: 18px; /* Slightly larger text in headers */
+    font-size: 18px;
 }
 th, td {
-    padding: 8px 4px; /* More space inside cells */
+    padding: 8px 4px;
 }
 tr:first-of-type {
     background-color: rgb(249, 249, 249);

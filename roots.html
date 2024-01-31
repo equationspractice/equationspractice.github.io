@@ -177,7 +177,7 @@
             <p>We can group our rules into 2 separate categories: <em>multiples of 8</em> and <em>multiples of 4</em>. To keep thing simple, lets start with our multiples of \(8\).</p>
             <p>A way to interpret the first two rules in this category \((8k + 2\) and \(8k - 2)\) is to look at the sign of our radicand \((i)\) in our equations. We can see that with our first rule \((8k + 2)\), our radicand <strong>keeps its sign</strong> throughout both equations, whereas in our second rule \((8k - 2)\), our radicand <strong>switches signs</strong>.
             </p>
-            <p>Because of the <em>upsidedown</em> variation in equations, this also means there's no functional difference between \(8k + 2\) and \(8k - 2\) in equations. For example, if we want to solve for \(\sqrt{i}\), a goal we can set is \(\sqrt[18]{i}\), since \(18\) is a value of \(8k + 2\). However, if a value of \(8k + 2\) isn't readily available from the cubes, we can just as easily set the goal as \(\sqrt[14]{i}\) and interpret \(i\) as upsidedown, since \(14\) is a value of \(8k - 2\).</p>
+            <p>Because of the <em>upsidedown</em> variation in equations, this also means there's no functional difference between \(8k + 2\) and \(8k - 2\) in equations. For example, if we want to solve for \(\sqrt{i}\), a goal we can set is \(\sqrt[18]{i}\), since \(18\) is a multiple of \(8k + 2\). However, if a multiple of \(8k + 2\) isn't readily available from the cubes, we can just as easily set the goal as \(\sqrt[14]{i}\) and interpret \(i\) as upsidedown, since \(14\) is a multiple of \(8k - 2\).</p>
             <p>Our third rule, \(8k + 4\), inherits the solutions from the 2 other rules, meaning if you set a goal where the index is a multiple of \(8k + 4\), such as \(\sqrt[4]{-1}\), you can solve for both \(\sqrt{i}\) and \(\sqrt{-i}\). To help digest this, the solutions for all 3 values are plotted below:
             </p>
             <div class="horizontal_image_container">
@@ -230,7 +230,7 @@
             <p>Going back to the \(\sqrt[86]{i}\) problem, the nearest multiple of \(4\) to \(86\) is \(84\). The difference between \(86\) and \(84\) is \(2\), so our remainder is \(2\) here. Since a remainder of \(2\) paired with a radicand of \(i\) doesn't fit any of our general rules, we move on by finding the nearest multiple of \(8\), which is \(88\). The difference between \(86\) and \(88\) is \(-2\) (be careful with the sign here, \(86\) is <strong>2 less</strong> than a multiple of \(8\)), which corresponds on our chart to \(8k - 2\).</p>
             <p>If it wasn't already clear, "nearest multiple" is a very loose term here. For \(86\), we could've chosen our nearest multiple of \(8\) to be \(80\), which would net us a remainder of \(6\). Nevertheless, this still corresponds to the \(8k - 2\) rule on the chart.</p>
             <p>There are of course some ways to optimize this strategy. Since our rules of \(8k + 4\) and \(4k + 2\) aren't defined when our radicand is \(i\), we don't have to check for these rules when our radicand is \(i\). Likewise, when our radicand is \(-1\), we only have to check the \(8k + 4\) and \(4k + 2\) rules. We do have to be careful when our radicand is \(-1\) however. Although \(\sqrt[19]{-1}\) doesn't fit any of our rules, \(-1\) raised to any odd power is still \(-1\), so a solution to the root above would be \(-1\).</p>
-            <p>Using the information above, here's a table listing the first \(50\) roots of \(i\) and \(-1\), as well as their corresponding rule.</p>
+            <p>Using the information above, here's a table listing the first \(50\) roots of \(i\) and \(-1\) as well as their corresponding rule.</p>
             <div style="text-align: center; margin: -12px 0 24px;">
                 <a id="table-toggle" href="javascript:void(0);">Show Table</a>
             </div>
@@ -284,7 +284,7 @@
             <ul>
                 <li>\((62+2)\sqrt{i}\)</li>
             </ul>
-            <p>We're going to insert the factorial behind the 62. Since \(62!\) is a multiple of \(8\), this goal falls into the \(8k + 2\) pattern, meaning that it reduces to \(\sqrt{i}\).</p>
+            <p>We're going to insert the factorial behind the \(62\). Since \(62!\) is a multiple of \(8\), this goal falls into the \(8k + 2\) pattern, meaning that it reduces to \(\sqrt{i}\).</p>
             <p>Heres a list of some possible goals you can set with this variation and their corresponding rule. You might find this list to be closely related to the remainder chart from an earlier section:</p>
             <ul>
                 <li>\(8k + 2\): \((n!+2)\sqrt{i}\) <em>or</em> \((n!-6)\sqrt{i}\)</li>
@@ -297,11 +297,11 @@
             <h4>Number of Factors<span class="impact none"> &mdash; Impact: </span></h4>
             <p>This variation doesn't open up any unique strategies.</p>
             <h4>Exponent<span class="impact high"> &mdash; Impact: </span></h4>
-            <p>This variation allows for the most powerful strategy of this article. We're going to utilize the idea that in order to solve our roots, we reduce our index by multiples of \(4\) and \(8\) to find our remainder. Here's an example of the setup of our goal:</p>
+            <p>This variation sets the stage for the most powerful strategy in this article. We're going to utilize the idea that in order to solve our roots, we reduce our index by multiples of \(4\) and \(8\) to find our remainder. Here's an example of the setup of our goal:</p>
             <ul>
                 <li>\((77 - 5)\sqrt{i}\) <em>(black exponent called, 7 cubes are block)</em></li>
             </ul>
-            <p>Again, we want the index of our goal to compute to multiple of 4 by default. However, because black exponent is called, let's interpret the goal as \((7^{7} - 5)\sqrt{i}\). Now it's time to solve the expression. To restate the solving process above, we reduce the index by \(4\) and \(8\) to find the remainder. Well, here, our index is an exponential expression, and the way we find the remainder of an exponential expression is... cycling.</p>
+            <p>Again, we want the index of our goal to compute to a multiple of 4 by default. However, because black exponent is called, let's interpret the goal as \((7^{7} - 5)\sqrt{i}\). Now it's time to solve the expression. To restate the solving process above, we reduce the index by \(4\) and \(8\) to find the remainder. Well, here our index is an exponential expression, and the way we find the remainder of an exponential expression is... cycling.</p>
             <p>To pull this off, we start by cycling the exponent \((7^{7})\). Usually, you'll want to cycle with a multiple of \(8\) with this strategy. That being said, here's the cycle for \(7^{7}\) mod \(8\):</p>
             <ul>
                 <li>\(7^1 = 7\)</li>
@@ -314,7 +314,7 @@
             <ul>
                 <li>\((39-2)\sqrt{i}\) <em>(upsidedown \(3\))</em></li>
             </ul>
-            <p>Because of the upsidedown \(3\), our opponent <em>has</em> to interpret the goal as \(((-3)^{9}-2)\sqrt{i}\). Let's solve this real quick. We'll cycle with a multiple of \(8\) for demonstration purposes, but because our index is odd here, cycling with a multiple of \(4\) would also yield the same answer. Regardless, cycling \((-3)^{9}\) with a \(k\) of \(8\):</p>
+            <p>Because of the upsidedown \(3\), our opponent <em>has</em> to interpret the goal as \(((-3)^{9}-2)\sqrt{i}\). Let's solve this real quick. We'll cycle with a multiple of \(8\) for demonstration purposes (but because our index is odd here, cycling with a multiple of \(4\) would also yield the same answer). Cycling \((-3)^{9}\) with a \(k\) of \(8\):</p>
             <ul>
                 <li>\((-3)^1 = -3\)</li>
                 <li>\((-3)^2 = 9\) mod \(8 ≡ 1\)</li>
