@@ -5,10 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Higher Order Complex Roots</title>
-    <link rel="stylesheet" type="text/css" href="roots/roots.css">
-    <script defer src="roots/roots.js"></script>
+    <link rel="stylesheet" type="text/css" href="equations_styles.css">
+    <link rel="stylesheet" type="text/css" href="roots.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.3.3/math.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="functions.js"></script>
+    <script defer src="roots.js"></script>
 </head>
 <body>
     <header>
@@ -104,11 +107,11 @@
             <p>Just to clarify, \(\sqrt[10]{i}\) and \(\sqrt{i}\) are not the same thing. Rather, we're showing that these values have solutions in common. In order to understand this, it can help if we graph the solutions for both \(\sqrt[10]{i}\) and \(\sqrt{i}\).</p>
             <div class="horizontal_image_container">
                 <div class="image_caption_container">
-                    <img src="/roots/images/sqrt_10_i.png" alt="Plotted solutions to \(\sqrt[10]{i}\)">
+                    <img src="/images/sqrt_10_i.png" alt="Plotted solutions to \(\sqrt[10]{i}\)">
                     <div class="image_caption">Solutions to \(\sqrt[10]{i}\)</div>
                 </div>
                 <div class="image_caption_container">
-                    <img src="/roots/images/sqrt_2_i.png" alt="Plotted solutions to \(\sqrt[2]{i}\)">
+                    <img src="/images/sqrt_2_i.png" alt="Plotted solutions to \(\sqrt[2]{i}\)">
                     <div class="image_caption">Solutions to \(\sqrt{i}\)</div>
                 </div>
             </div>
@@ -182,17 +185,17 @@
             </p>
             <div class="horizontal_image_container">
                 <div class="image_caption_container">
-                    <img src="/roots/images/sqrt_2_i.png" alt="Plotted solutions to \(\sqrt{i}\)">
+                    <img src="/images/sqrt_2_i.png" alt="Plotted solutions to \(\sqrt{i}\)">
                     <div class="image_caption">Solutions to \(\sqrt{i}\)</div>
                     <div class="image_caption">\((\frac{\sqrt{2}}{2} + \frac{\sqrt{2}}{2}i)\), \((-\frac{\sqrt{2}}{2} - \frac{\sqrt{2}}{2}i)\)</div>
                 </div>
                 <div class="image_caption_container">
-                    <img src="/roots/images/sqrt_2_-i.png" alt="Plotted solutions to \(\sqrt{-i}\)">
+                    <img src="/images/sqrt_2_-i.png" alt="Plotted solutions to \(\sqrt{-i}\)">
                     <div class="image_caption">Solutions to \(\sqrt{-i}\)</div>
                     <div class="image_caption">\((-\frac{\sqrt{2}}{2} + \frac{\sqrt{2}}{2}i)\), \((\frac{\sqrt{2}}{2} - \frac{\sqrt{2}}{2}i)\)</div>
                 </div>
                 <div class="image_caption_container" style="width: 220px">
-                    <img src="/roots/images/sqrt_4_-1.png" alt="Plotted solutions to \(\sqrt[4]{-1}\)">
+                    <img src="/images/sqrt_4_-1.png" alt="Plotted solutions to \(\sqrt[4]{-1}\)">
                     <div class="image_caption">Solutions to \(\sqrt[4]{-1}\)</div>
                     <div class="image_caption">\((\frac{\sqrt{2}}{2} + \frac{\sqrt{2}}{2}i)\), \((-\frac{\sqrt{2}}{2} - \frac{\sqrt{2}}{2}i)\), \((-\frac{\sqrt{2}}{2} + \frac{\sqrt{2}}{2}i)\), \((\frac{\sqrt{2}}{2} - \frac{\sqrt{2}}{2}i)\)</div>
                 </div>
@@ -278,7 +281,7 @@
             </h4>
             <p>This variation doesn't open up any unique strategies. Similar to wild, it can be useful if you're missing a necessary cube for your solution. Be mindful that with <em>Multiple Operations</em>, the \(-\) cube cannot be used multiple times to represent \(i\).</p>
             <h4>Factorial<span class="impact high"> &mdash; Impact: </span></h4>
-            <p>This variation allows for my favorite strategy. We're going to use the idea that any number \(n\) factorial will always be a multiple \(4\) and \(8\) (given that \(n\ge4\)). Here's a quick explanation:</p>
+            <p>This variation opens the door to my favorite strategy. We're going to use the idea that any number \(n\) factorial will always be a multiple \(4\) and \(8\) (given that \(n\ge4\)). Here's a quick explanation:</p>
             <p>Take \(51!\) for example. Using the definition of factorial, we can rewrite \(51!\) as \(51\times50\times49\:\times\;.\;.\;.\times\:4\times3\times2\). Since \(4\times2 = 8\), this means \(8\) (and 4) must be a factor of \(51!\), and that likewise, \(51!\) must be a multiple of \(4\) and \(8\).</p>
             <p>Now, lets set a goal where our index computes to a multiple of \(4\):</p>
             <ul>
@@ -325,6 +328,28 @@
             <p><em>*More development needed</em></p>
             <h4>Log<span class="impact none"> &mdash; Impact: </span></h4>
             <p>This variation doesn't open up any unique strategies.</p>
+            <h2>Practice</h2>
+            <div id="problem-set-1" class="question-container">
+                <div class="question-header">
+                    <div class="question-label">PROBLEM SET 1</div>
+                    <ul class="question-indicator-container"></ul>
+                </div>
+                <div class="question-content-container"></div>
+            </div>
+            <div id="problem-set-2" class="question-container">
+                <div class="question-header">
+                    <div class="question-label">PROBLEM SET 2</div>
+                    <ul class="question-indicator-container"></ul>
+                </div>
+                <div class="question-content-container"></div>
+            </div>
+            <div id="problem-set-3" class="question-container">
+                <div class="question-header">
+                    <div class="question-label">PROBLEM SET 3</div>
+                    <ul class="question-indicator-container"></ul>
+                </div>
+                <div class="question-content-container"></div>
+            </div>
         </section>
     </main>
 </body>
