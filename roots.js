@@ -6,14 +6,14 @@ function wrapTextInSpan(element) {
     }
 }
 
-let principle = 180, arr = []
-for (let i = 0; i < 32; i++) {
-    arr.push(principle / 16)
-    principle += 180
-}
-let usefulAngles = [45, 135, 225, 315, 30, 60, 120, 150, 210, 240, 300, 330, 0, 90, 180, 270, 360].concat([22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5])
-let finalAngles = arr.filter((angle) => !usefulAngles.includes(angle))
-console.log(finalAngles)
+// let principle = 180, arr = []
+// for (let i = 0; i < 32; i++) {
+//     arr.push(principle / 16)
+//     principle += 180
+// }
+// let usefulAngles = [45, 135, 225, 315, 30, 60, 120, 150, 210, 240, 300, 330, 0, 90, 180, 270, 360].concat([22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5])
+// let finalAngles = arr.filter((angle) => !usefulAngles.includes(angle))
+// console.log(finalAngles)
 
 const textElements = document.body.querySelectorAll('p, div, li');
 for (let element of textElements) {
