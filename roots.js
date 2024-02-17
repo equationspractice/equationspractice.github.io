@@ -1,12 +1,8 @@
-function wrapTextInSpan() {
-    const elements = document.body.querySelectorAll('p, div, li');
-    console.log(elements)
 
-    for (let element of elements) {
-        if (element.textContent.trim() !== '') {
-            replacement = element.innerHTML.replaceAll(/(\\\([^\(]*?\\\))([.,:\)])/g, '<span style="white-space: nowrap;">$1$2</span>');
-            element.innerHTML = replacement
-        }
+function wrapTextInSpan(element) {
+    if (element.textContent.trim() !== '') {
+        replacement = element.innerHTML.replaceAll(/(\\\([^\(]*?\\\))([.,:\)])/g, '<span style="white-space: nowrap;">$1$2</span>');
+        element.innerHTML = replacement
     }
 }
 
@@ -18,7 +14,11 @@ for (let i = 0; i < 32; i++) {
 let usefulAngles = [45, 135, 225, 315, 30, 60, 120, 150, 210, 240, 300, 330, 0, 90, 180, 270, 360].concat([22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5])
 let finalAngles = arr.filter((angle) => !usefulAngles.includes(angle))
 console.log(finalAngles)
-wrapTextInSpan()
+
+const textElements = document.body.querySelectorAll('p, div, li');
+for (let element of textElements) {
+    wrapTextInSpan(element)
+}
 
 let elements = new Map([
     [0, "\\( 1"],
@@ -715,6 +715,7 @@ function createQuestion(questionContainer, questionNumber) {
     // Question Text
     const questionContent = createElement('div', 'question-content')
     question.content(questionContent)
+    wrapTextInSpan(questionContent)
     contentContainer.append(questionContent)
 
     // Question Input
@@ -768,6 +769,7 @@ function createQuestion(questionContainer, questionNumber) {
     contentContainer.append(createSubmitButton(question.answers, question.type))
     const explanation = createElement('div', 'question-explanation-text')
     question.explanation(explanation)
+    wrapTextInSpan(explanation)
     createExplanation(contentContainer, explanation)
     
     MathJax.typeset([contentContainer])
@@ -1021,7 +1023,40 @@ const problemSet1 = [
                 <li>\\(\\sqrt[n]{i} = \\sqrt{i}\\)</li>
                 <li>\\(\\sqrt[n]{-i} = \\sqrt{-i}\\)</li>
             </ul>
-            <p>The radicand under our root is \\(i\\), so our problem falls under the first equation and shares solutions with \\(\\sqrt{i}\\).</p>`
+            <p>The radicand under our root is \\(i\\), so our problem falls under the first equation and shares solutions with \\(\\sqrt{i}\\).</p>
+            <p>Let's check our other answer choices by seeing if they share solutions with \\(\\sqrt{i}\\):</p>
+            <ul>
+                <li>
+                    <p>\\(\\sqrt[-38]{i}\\) can be rewritten as \\(\\sqrt[38]{-i}\\), which falls into the \\(8k - 2\\) pattern (it's \\(2\\) less than \\(40\\)). Our rule for \\(n = 8k - 2\\) is as follows:</p>
+                    <ul style="margin-top: -16px">
+                        <li>\\(\\sqrt[n]{i} = \\sqrt{-i}\\)</li>
+                        <li>\\(\\sqrt[n]{-i} = \\sqrt{i}\\)</li>
+                    </ul>
+                    <p>With a radicand of \\(-i\\), this means that \\(\\sqrt[38]{-i}\\) shares solutions with \\(\\sqrt{i}\\) and is one of our correct answer choices.
+                </li>
+                <li>
+                    <p>\\(\\sqrt[58]{-1}\\) falls into the \\(4k + 2\\) pattern (it's \\(2\\) more than \\(56\\)). Our rule for \\(n = 4k + 2\\) is as follows:</p>
+                    <ul style="margin-top: -16px">
+                        <li>\\(\\sqrt[n]{-1} = \\pm i\\)</li>
+                    </ul>
+                    <p>This means that \\(\\sqrt[58]{-1}\\) has solutions at both \\(i\\) and \\(-i\\). However, neither \\(i\\) nor \\(-i\\) are solutions to \\(\\sqrt{i}\\).
+                <li>
+                    <p>\\(\\sqrt[92]{i}\\) doesn't fall into any of our patterns because it's an exact multiple of \\(4\\) with a radicand of \\(i\\). Therefore, \\(\\sqrt[92]{i}\\) cannot be a correct answer choice.
+                </li>
+                <li>
+                    <p>\\(\\sqrt[-38]{-i}\\) can be rewritten as \\(\\sqrt[38]{i}\\), which falls into the \\(8k - 2\\) pattern (it's \\(2\\) less than \\(40\\)). Our rule for \\(n = 8k - 2\\) is as follows:</p>
+                    <ul style="margin-top: -16px">
+                        <li>\\(\\sqrt[n]{i} = \\sqrt{-i}\\)</li>
+                        <li>\\(\\sqrt[n]{-i} = \\sqrt{i}\\)</li>
+                    </ul>
+                    <p>With a radicand of \\(i\\), this means that \\(\\sqrt[38]{i}\\) shares solutions with \\(\\sqrt{-i}\\). However, \\(\\sqrt{-i}\\) does not share solutions with \\(\\sqrt{i}\\).
+                </li>
+                <li>
+                    \\(\\sqrt{-i}\\) does not share solutions with \\(\\sqrt{i}\\) and is not a correct answer choice.
+                </li>
+            </ul>
+            <p>In conclusion, our correct answer choices are \\(\\sqrt{i}\\) and \\(\\sqrt[-38]{i}\\).</p>
+            `
         },
         type: 'multi-select',
         choices: [
@@ -1032,7 +1067,7 @@ const problemSet1 = [
             '\\(\\sqrt[-38]{-i}\\)',
             '\\(\\sqrt{-i}\\)',
         ],
-        answers: [true, true, false, false, true, false],
+        answers: [true, true, false, false, false, false],
     },
 ]
 function createSmallBoard(cubes = {goal: []}) {
@@ -1108,7 +1143,7 @@ const problemSet2 = [
         },
         explanation: (explanation) => {
             explanation.innerHTML = `
-            <p>The goal above can be read as \\((13 \\times 3)\\sqrt{i}\\), which simplifies to \\(\\sqrt[39]{i}\\).</p>
+            <p>The goal above can be read as \\((13 \\times 3)\\sqrt{i}\\), which computes to \\(\\sqrt[39]{i}\\).</p>
             <p>Our index, \\(39\\), falls into the \\(4k - 1\\) pattern (it's \\(1\\) less than \\(40\\)). Our rule for \\(n = 4k - 1\\) is as follows:</p>
             <ul style="margin-top: -16px">
                 <li>\\(\\sqrt[n]{i} = -i\\)</li>
@@ -1181,7 +1216,7 @@ const problemSet2 = [
                 <li>\\(\\sqrt[n]{i} = \\sqrt{i}\\)</li>
                 <li>\\(\\sqrt[n]{-i} = \\sqrt{-i}\\)</li>
             </ul>
-            <p>Interpreting the goal as \\(\\sqrt[-10]{i}\\) gives us a solution of \\(\\sqrt{-i}\\), whereas interpreting the goal as \\(\\sqrt[-10]{-i}\\) gives us a solution of \\(\\sqrt{i}\\). (Be careful with the signs here).</p>
+            <p>Interpreting the goal as \\(\\sqrt[-10]{i}\\), which becomes \\(\\sqrt[10]{-i}\\), gives us a solution of \\(\\sqrt{-i}\\). Interpreting the goal as \\(\\sqrt[-10]{-i}\\), which becomes \\(\\sqrt[10]{i}\\), gives us a solution of \\(\\sqrt{i}\\). (Be careful with the signs here).</p>
             <p>In conclusion, our correct answer choices are \\(\\sqrt{i}\\) and \\(\\sqrt{-i}\\).</p>
             `
         },
@@ -1208,11 +1243,26 @@ const problemSet2 = [
                 {symbol: '−', color: 'red', orientation: 'sideways'},
             ]}))
             questionContent.innerHTML += `<p><strong>What are the possible solutions to this goal?</strong></p>`
-            questionContent.innerHTML += `<div class="note" style="margin: -20px 0 28px">Note: With Powers of the Base, the \\(1\\) cube can be used to represent the any integral power of \\(10\\) (e.g. \\(10\\), \\(100\\), \\(1000\\) . . . ).</div>`
+            questionContent.innerHTML += `<div class="note" style="margin: -20px 0 28px">Note: With Powers of the Base, the \\(1\\) cube can be used to represent any integral power of \\(10\\) (e.g. \\(10\\), \\(100\\), \\(1000\\) . . . ).</div>`
         },
         explanation: (explanation) => {
             explanation.innerHTML = `
-            Explanation
+            <p>The goal above can be read as \\((97-1)\\sqrt{i}\\). If we try to directly compute our index \\((97 - 1)\\ to solve for \\(\\sqrt[96]{i}\\), our new index, \\(96\\), becomes an exact multiple of \\(4\\) with a radicand of \\(i\\). This does not fall into any of our patterns.</p>
+            <p>Instead, we can use the <em>Powers of the Base</em> variation to intepret the \\(1\\) as a \\(10\\), making our new goal \\((97-10)\\sqrt{i}\\), which computes to \\(\\sqrt[87]{i}\\).</p>
+            <p>Our new index, \\(87\\), falls into the \\(4k - 1\\) pattern (it's \\(1\\) less than \\(88\\)). Our rule for \\(n = 4k - 1\\) is as follows:</p>
+            <ul style="margin-top: -16px">
+                <li>\\(\\sqrt[n]{i} = -i\\)</li>
+                <li>\\(\\sqrt[n]{-i} = i\\)</li>
+            </ul>
+            <p>Interpreting the goal as \\(\\sqrt[87]{i}\\) gives us a solution of \\(-i\\), whereas interpreting the goal as \\(\\sqrt[87]{-i}\\) gives us a solution of \\(i\\).</p>
+            <p>While we can interpret the goal with higher powers of \\(10\\), this won't reveal any new solutions. For demonstrative purposes, we can try to interpret the \\(1\\) in the goal as \\(100\\) to see what happens.
+            <p>Our new goal, \\((97-100)\\sqrt{i}\\) computes to \\(\\sqrt[-3]{i}\\), or \\(\\sqrt[3]{-i}\\) if we use our properties of negative exponents. Our new index, \\(3\\), falls into the \\(4k - 1\\) pattern. Our rule for \\(n = 4k - 1\\) is as follows:</p>
+            <ul style="margin-top: -16px">
+                <li>\\(\\sqrt[n]{i} = -i\\)</li>
+                <li>\\(\\sqrt[n]{-i} = i\\)</li>
+            </ul>
+            <p>No matter which power of \\(10\\) we use, our possible solutions will still be \\(i\\) and \\(-i\\). (This has to do with the fact that powers of even numbers will stay even, and that powers of odd numbers will stay odd).</p>
+            <p>In conclusion, our correct answer choices are \\(i\\) and \\(-i\\).</p>
             `
         },
         type: 'multi-select',
@@ -1241,7 +1291,15 @@ const problemSet2 = [
         },
         explanation: (explanation) => {
             explanation.innerHTML = `
-            Explanation
+            <p>The goal above can be read as \\((54 + 2)\\sqrt{i}\\). If we try to directly compute our index \\((54 + 2)\\) to solve for \\(\\sqrt[56]{i}\\), our new index, \\(56\\), becomes an exact multiple of \\(4\\) with a radicand of \\(i\\). This does not fall into any of our patterns.</p>
+            <p>Instead, we can use the <em>Factorial</em> variation to intepret our goal as \\((54! + 2)\\sqrt{i}\\).</p>
+            <p>Our new index, \\(54! + 2\\), falls into the \\(8k + 2\\) pattern (see <em>Factorial</em> section above). Our rule for \\(n = 8k + 2\\) is as follows:</p>
+            <ul style="margin-top: -16px">
+                <li>\\(\\sqrt[n]{i} = \\sqrt{i}\\)</li>
+                <li>\\(\\sqrt[n]{-i} = \\sqrt{-i}\\)</li>
+            </ul>
+            <p>Interpreting the goal as \\((54! + 2)\\sqrt{i}\\) gives us a solution of \\(\\sqrt{i}\\), whereas interpreting the goal as \\((54! + 2)\\sqrt{-i}\\) gives us a solution of \\(\\sqrt{-i}\\).</p>
+            <p>In conclusion, our correct answer choices are \\(\\sqrt{i}\\) and \\(\\sqrt{-i}\\).</p>
             `
         },
         type: 'multi-select',
@@ -1270,7 +1328,20 @@ const problemSet2 = [
         },
         explanation: (explanation) => {
             explanation.innerHTML = `
-            Explanation
+            <p>The goal above can be read as \\((35 - 9)\\sqrt{i}\\). If we try to directly compute our index \\((35 - 9)\\), our new goal becomes \\(\\sqrt[26]{i}\\).</p>
+            <p>Our new index, \\(26\\), falls into the \\(8k + 2\\) pattern (it's \\(2\\) more than \\(24\\)). Our rule for \\(n = 8k + 2\\) is as follows:</p>
+            <ul style="margin-top: -16px">
+                <li>\\(\\sqrt[n]{i} = \\sqrt{i}\\)</li>
+                <li>\\(\\sqrt[n]{-i} = \\sqrt{-i}\\)</li>
+            </ul>
+            <p>Interpreting the goal as \\(\\sqrt[26]{i}\\) gives us a solution of \\(\\sqrt{i}\\), whereas interpreting the goal as \\(\\sqrt[26]{-i}\\) gives us a solution of \\(\\sqrt{-i}\\).</p>
+            <p>If we instead use the <em>Factorial</em> variation to intepret our goal as \\((35! - 9)\\sqrt{i}\\), our new index (\\(35! - 9\\)) falls into the \\(4k - 1\\) pattern (we can subtract \\(8\\) from \\(4k - 1\\) to get \\(4k - 9\\)). Our rule for \\(n = 8k - 1\\) is as follows:</p>
+            <ul style="margin-top: -16px">
+                <li>\\(\\sqrt[n]{i} = -i\\)</li>
+                <li>\\(\\sqrt[n]{-i} = i\\)</li>
+            </ul>
+            <p>Interpreting the goal as \\((35! - 9)\\sqrt{i}\\) gives us a solution of \\(-i\\), whereas interpreting the goal as \\((35! - 9)\\sqrt{-i}\\) gives us a solution of \\(i\\).</p>
+            <p>In conclusion, our correct answer choices are \\(\\sqrt{i}\\), \\(\\sqrt{-i}\\), \\(i\\), \\(-i\\).</p>
             `
         },
         type: 'multi-select',
@@ -1299,7 +1370,22 @@ const problemSet2 = [
         },
         explanation: (explanation) => {
             explanation.innerHTML = `
-            Explanation
+            <p>The goal above can be read as \\((56 + 4)\\sqrt{i}\\). If we try to directly compute our index \\((56 + 4)\\) to solve for \\(\\sqrt[60]{i}\\), our new index, \\(60\\), becomes an exact multiple of \\(4\\) with a radicand of \\(i\\). This does not fall into any of our patterns.</p>
+            <p>Instead, we can use the <em>Exponent</em> variation to intepret our goal as \\((5^4 + 2)\\sqrt{i}\\).</p>
+            <p>To find out what pattern our new index (\\(5^6 + 4\\)) falls into, we need to cycle our index with multiples of \\(8\\) (see <em>Exponent</em> section above):</p>
+            <ul>
+                <li>\\(5^1 = 5\\)</li>
+                <li>\\(5^2 = 25\\) mod \\(8 ≡ 1\\)</li>
+            </ul>
+            <p>Our cycle length is \\(2\\), so once we reduce our exponent, we get \\(5^6 ≡ 1\\).</p>
+            <p>Substiting \\(5^6\\) as \\(1\\) in our goal, we get a new goal of \\((1 + 4)\\sqrt{i}\\), which computes to \\(\\sqrt[5]{i}\\).</p>
+            <p>Our new index, \\(5\\), falls into the \\(4k + 1\\) pattern. Our rule for \\(n = 4k + 1\\) is as follows:</p>
+            <ul style="margin-top: -16px">
+                <li>\\(\\sqrt[n]{i} = i\\)</li>
+                <li>\\(\\sqrt[n]{-i} = -i\\)</li>
+            </ul>
+            <p>Interpreting the goal as \\((5^6 + 4)\\sqrt{i}\\) gives us a solution of \\(i\\), whereas interpreting the goal as \\((5^6 + 4)\\sqrt{-i}\\) gives us a solution of \\(-i\\).</p>
+            <p>In conclusion, our correct answer choices are \\(i\\) and \\(-i\\).</p>
             `
         },
         type: 'multi-select',
@@ -1314,12 +1400,12 @@ const problemSet2 = [
     },
     {   
         content: (questionContent) => {
-            questionContent.innerHTML += `<p>Given the goal below and the following variations: <em>Green Exponent</em>, <em>Base \\(12\\)</em>, <em>Imaginary</em></p>`
+            questionContent.innerHTML += `<p>Given the goal below and the following variations: <em>Black Exponent</em>, <em>Base \\(11\\)</em>, <em>Imaginary</em></p>`
             questionContent.append(createSmallBoard({goal: [
                 {symbol: '^', color: 'green'},
                 {symbol: '7', color: 'black'},
                 {symbol: '-', color: 'red'},
-                {symbol: '1', color: 'red'},
+                {symbol: '3', color: 'red'},
                 {symbol: '&nbsp'},
                 {symbol: '√', color: 'black'},
                 {symbol: '−', color: 'red', orientation: 'sideways'},
@@ -1328,7 +1414,24 @@ const problemSet2 = [
         },
         explanation: (explanation) => {
             explanation.innerHTML = `
-            Explanation
+            <p>The goal above can be read as \\((127 - 3)\\sqrt{i}\\) (after accounting for <em>Base \\(12\\)</em>). If we try to directly compute our index \\((127 - 3)\\) to solve for \\(\\sqrt[124]{i}\\), our new index, \\(124\\), becomes an exact multiple of \\(4\\) with a radicand of \\(i\\). This does not fall into any of our patterns.</p>
+            <p>Instead, we can use the <em>Exponent</em> variation to intepret our goal as \\((10^7 - 3)\\sqrt{i}\\).</p>
+            <p>To find out what pattern our new index (\\(10^7 - 3\\)) falls into, we need to cycle our index with multiples of \\(8\\) (see <em>Exponent</em> section above):</p>
+            <ul>
+                <li>\\(10^1 = 10\\) mod \\(8 ≡ 2\\)</li>
+                <li>\\(10^2 = 20\\) mod \\(8 ≡ 4\\)</li>
+                <li>\\(10^3 = 40\\) mod \\(8 ≡ 0\\)</li>
+                <li>\\(10^4 = 0\\)</li>
+            </ul>
+            <p>Any power of \\(10\\) greater than 2 just reduces down to 0, so once we reduce our exponent, we get \\(10^7 ≡ 0\\).</p>
+            <p>Substiting \\(10^7\\) as \\(0\\) in our goal, we get a new goal of \\((0 - 3)\\sqrt{i}\\), which computes to \\(\\sqrt[-3]{i}\\), or \\(\\sqrt[3]{-i}\\) if we use our property of negative exponents.</p>
+            <p>Our new index, \\(3\\), falls into the \\(4k - 1\\) pattern. Our rule for \\(n = 4k - 1\\) is as follows:</p>
+            <ul style="margin-top: -16px">
+                <li>\\(\\sqrt[n]{i} = -i\\)</li>
+                <li>\\(\\sqrt[n]{-i} = i\\)</li>
+            </ul>
+            <p>Interpreting the goal as \\((10^7 - 1)\\sqrt{i}\\) gives us a solution of \\(-i\\), whereas interpreting the goal as \\((10^7 - 1)\\sqrt{-i}\\) gives us a solution of \\(i\\).</p>
+            <p>In conclusion, our correct answer choices are \\(i\\) and \\(-i\\).</p>
             `
         },
         type: 'multi-select',
@@ -1358,7 +1461,20 @@ const problemSet2 = [
         },
         explanation: (explanation) => {
             explanation.innerHTML = `
-            Explanation
+            <p>The goal above can be read as \\(((-7)^9 - 3)\\sqrt{i}\\). To find out what pattern our index (\\((-7)^9 - 3)\\) falls into, we need to cycle our index with multiples of \\(8\\) (see <em>Exponent</em> section above):</p>
+            <ul>
+                <li>\\((-7)^1 = -7\\)</li>
+                <li>\\((-7)^2 = 49\\) mod \\(8 ≡ 1\\)</li>
+            </ul>
+            <p>Our cycle length is \\(2\\), so once we reduce our exponent, we get \\((-7)^9 ≡ -7\\).</p>
+            <p>Substiting \\((-7)^9\\) as \\(-7\\) in our goal, we get a new goal of \\((-7 - 6)\\sqrt{i}\\), which computes to \\(\\sqrt[-13]{i}\\), or \\(\\sqrt[13]{-i}\\) if we use our property of negative exponents.</p>
+            <p>Our new index, \\(13\\), falls into the \\(4k + 1\\) pattern. Our rule for \\(n = 4k + 1\\) is as follows:</p>
+            <ul style="margin-top: -16px">
+                <li>\\(\\sqrt[n]{i} = i\\)</li>
+                <li>\\(\\sqrt[n]{-i} = -i\\)</li>
+            </ul>
+            <p>Interpreting the goal as \\(((-7)^9 - 6)\\sqrt{i}\\) gives us a solution of \\(i\\), whereas interpreting the goal as \\(((-7)^9 - 6)\\sqrt{-i}\\) gives us a solution of \\(-i\\).</p>
+            <p>In conclusion, our correct answer choices are \\(i\\) and \\(-i\\).</p>
             `
         },
         type: 'multi-select',
