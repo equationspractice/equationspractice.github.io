@@ -1138,7 +1138,7 @@ function changeKeyboardLayout() {
             svg.style.width = '26px'
             button.append(svg)
             button.addEventListener('click', function() {
-                inputCube(this.classList[1]) 
+                inputCubes(this.classList[1]) 
             })
             if (rowArr1.includes(symbol)) keyboardRow1.append(button)
             if (rowArr2.includes(symbol)) keyboardRow2.append(button)
@@ -1184,7 +1184,7 @@ function changeKeyboardLayout() {
                 break;
         }
         button.addEventListener('click', function() {
-            inputCube(this.classList[1]) 
+            inputCubes(this.classList[1]) 
         })
     }
     keyboardContainer.append(keyboardRow1)
@@ -1200,10 +1200,10 @@ document.addEventListener('keydown', function (keypress) {
         if (document.querySelector('.selector-container')) return;
         moveCursor(keypress.key)
     }
-    inputCube(translateName(keypress.key));
+    inputCubes(translateName(keypress.key));
 });
 for (let button of keyboardButtons) button.addEventListener('click', function() {
-    inputCube(this.classList[1]) 
+    inputCubes(this.classList[1]) 
 });
 
 function getSelectedCube(width) {
@@ -1220,7 +1220,7 @@ function getSelectedCube(width) {
     return cube ? cube : null
 }
 
-function inputCube(cube) {
+function inputCubes(cube) {
 
     if (document.querySelector('.selector-container')) return;
     if (cube === undefined) return;

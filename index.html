@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.3.3/math.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- <script src="functions.js"></script> -->
     <script defer src="equations_script.js"></script>
 </head>
 <body>
@@ -28,39 +29,44 @@
             <div id="variations-arrow-box">&gt</div>
         </div>
         <div id="board-container">
-        <div id="parent-restraint-container">
-            <div class="restraint-container"><h3>Forbidden</h3>
-                <div id="forbidden-container"></div>
-            </div>
-            <div class="restraint-container"><h3>Permitted</h3>
-                <div id="permitted-container"></div>
-            </div>
-            <div class="restraint-container"><h3>Required</h3>
-                <div id="required-container"></div>
-            </div>
-        </div>
-        <div id="input-container">
-            <div id="solution-view-container">
-                <div id="solution-container"></div>
-                <div id="solution-bar">
-                    <h3 id="solution-text">Solution</h3>
+            <div id="parent-restraint-container">
+                <div class="restraint-container">
+                    <h3>Forbidden</h3>
+                    <div id="forbidden-container"></div>
+                </div>
+                <div class="restraint-container">
+                    <h3>Permitted</h3>
+                    <div id="permitted-container"></div>
+                </div>
+                <div class="restraint-container">
+                    <h3>Required</h3>
+                    <div id="required-container"></div>
                 </div>
             </div>
-            <div id="equals-container">
-                <div id="equals-bar1"></div>
-                <div id="equals-bar2"></div>
-            </div>
-            <div id="goal-view-container">
-                <div id="goal-container"></div>
-                <div id="goal-bar"><h3 id="goal-text">Goal</h3></div>
+            <div id="input-container">
+                <div id="solution-view-container">
+                    <div id="solution-container"></div>
+                    <div id="solution-bar">
+                        <h3 id="solution-text">Solution</h3>
+                    </div>
+                </div>
+                <div id="equals-container">
+                    <div id="equals-bar1"></div>
+                    <div id="equals-bar2"></div>
+                </div>
+                <div id="goal-view-container">
+                    <div id="goal-container"></div>
+                    <div id="goal-bar">
+                        <h3 id="goal-text">Goal</h3>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="bottom-puzzle-container">
-        <div id="resources-container">
+        <div id="bottom-puzzle-container">
+            <div id="resources-container">
+            </div>
+            <div id="submit-button">Submit</div>
         </div>
-        <div id="submit-button">Submit</div>
-    </div>
         <div id="keyboard-container" class="hidden"></div>
     </div>
 </body>
