@@ -1111,7 +1111,7 @@ const problemSet2 = [
                 <li>\\(\\sqrt[n]{i} = \\sqrt{-i}\\)</li>
                 <li>\\(\\sqrt[n]{-i} = \\sqrt{i}\\)</li>
             </ul>
-            <p>However, because \\(i\\), when used in the goal, is ambiguous as to whether it is rightside up or upside down, we can interpret our goal as both \\(\\sqrt[62]{i}\\) and \\(\\sqrt[62]{-i}\\).</p>
+            <p>However, because \\(i\\), when used in the goal, is ambiguous as to whether it is right side up or upside down, we can interpret our goal as both \\(\\sqrt[62]{i}\\) and \\(\\sqrt[62]{-i}\\).</p>
             <p>Interpreting the goal as \\(\\sqrt[62]{i}\\) gives us a solution of \\(\\sqrt{-i}\\), whereas interpreting the goal as \\(\\sqrt[62]{-i}\\) gives us a solution of \\(\\sqrt{i}\\).</p>
             <p>In conclusion, our correct answer choices are \\(\\sqrt{i}\\) and \\(\\sqrt{-i}\\).</p>
             `
@@ -1149,7 +1149,7 @@ const problemSet2 = [
                 <li>\\(\\sqrt[n]{i} = -i\\)</li>
                 <li>\\(\\sqrt[n]{-i} = i\\)</li>
             </ul>
-            <p>However, because \\(i\\), when used in the goal, is ambiguous as to whether it is rightside up or upside down, we can interpret our goal as both \\(\\sqrt[39]{i}\\) and \\(\\sqrt[39]{-i}\\).</p>
+            <p>However, because \\(i\\), when used in the goal, is ambiguous as to whether it is right side up or upside down, we can interpret our goal as both \\(\\sqrt[39]{i}\\) and \\(\\sqrt[39]{-i}\\).</p>
             <p>Interpreting the goal as \\(\\sqrt[39]{i}\\) gives us a solution of \\(-i\\), whereas interpreting the goal as \\(\\sqrt[39]{-i}\\) gives us a solution of \\(i\\).</p>
             <p>In conclusion, our correct answer choices are \\(i\\) and \\(-i\\).</p>
             `
@@ -1247,7 +1247,7 @@ const problemSet2 = [
         },
         explanation: (explanation) => {
             explanation.innerHTML = `
-            <p>The goal above can be read as \\((97-1)\\sqrt{i}\\). If we try to directly compute our index \\((97 - 1)\\ to solve for \\(\\sqrt[96]{i}\\), our new index, \\(96\\), becomes an exact multiple of \\(4\\) with a radicand of \\(i\\). This does not fall into any of our patterns.</p>
+            <p>The goal above can be read as \\((97-1)\\sqrt{i}\\). If we try to directly compute our index \\((97 - 1)\\) to solve for \\(\\sqrt[96]{i}\\), our new index, \\(96\\), becomes an exact multiple of \\(4\\) with a radicand of \\(i\\). This does not fall into any of our patterns.</p>
             <p>Instead, we can use the <em>Powers of the Base</em> variation to intepret the \\(1\\) as a \\(10\\), making our new goal \\((97-10)\\sqrt{i}\\), which computes to \\(\\sqrt[87]{i}\\).</p>
             <p>Our new index, \\(87\\), falls into the \\(4k - 1\\) pattern (it's \\(1\\) less than \\(88\\)). Our rule for \\(n = 4k - 1\\) is as follows:</p>
             <ul style="margin-top: -16px">
@@ -1468,7 +1468,7 @@ const problemSet2 = [
             </ul>
             <p>Our cycle length is \\(2\\), so once we reduce our exponent, we get \\((-7)^9 ≡ -7\\).</p>
             <p>Substiting \\((-7)^9\\) as \\(-7\\) in our goal, we get a new goal of \\((-7 - 6)\\sqrt{i}\\), which computes to \\(\\sqrt[-13]{i}\\), or \\(\\sqrt[13]{-i}\\) if we use our property of negative exponents.</p>
-            <p>Our new index, \\(13\\), falls into the \\(4k + 1\\) pattern. Our rule for \\(n = 4k + 1\\) is as follows:</p>
+            <p>Our new index, \\(13\\), falls into the \\(4k + 1\\) pattern (it's \\(1\\) more than \\(12\\)). Our rule for \\(n = 4k + 1\\) is as follows:</p>
             <ul style="margin-top: -16px">
                 <li>\\(\\sqrt[n]{i} = i\\)</li>
                 <li>\\(\\sqrt[n]{-i} = -i\\)</li>
