@@ -1356,7 +1356,7 @@ const problemSet2 = [
     },
     {   
         content: (questionContent) => {
-            questionContent.innerHTML += `<p>Given the goal below and the following variations: <em>Black Exponent</em>, <em>Imaginary</em></p>`
+            questionContent.innerHTML += `<p>Given the goal below and the following variations: <em>Green Exponent</em>, <em>Imaginary</em></p>`
             questionContent.append(createSmallBoard({goal: [
                 {symbol: '5', color: 'green'},
                 {symbol: '6', color: 'green'},
@@ -1446,7 +1446,7 @@ const problemSet2 = [
     },
     {   
         content: (questionContent) => {
-            questionContent.innerHTML += `<p>Given the goal below and the following variations: <em>Green Exponent</em>, <em>Imaginary</em></p>`
+            questionContent.innerHTML += `<p>Given the goal below and the following variations: <em>Black Exponent</em>, <em>Imaginary</em></p>`
             questionContent.append(createSmallBoard({goal: [
                 {symbol: '7', color: 'green', orientation: 'upsidedown'},
                 {symbol: '9', color: 'black'},
