@@ -711,4 +711,21 @@ span.impact.none::after {
         justify-content: center;
         padding: 2px;
     }
+    /* Overrides equations.css media queries */
+    .cube {
+        height: 42px;
+        width: 42px;
+    }
+    .cube .cube-content {
+        height: 42px;
+        width: 42px;
+    }
+    .cube .hover-div {
+        height: 42px;
+        width: 42px;
+    }
+    .cube .background-div {
+        height: 42px;
+        width: 42px;
+    }
 }

@@ -407,13 +407,7 @@ header h1 {
 .cube.powers-of-base.sideways.upsidedown::after {translate: -9px -22px}
 .cube.powers-of-base.sideways::after {translate: -9px -24px}
 
-.goal-cube {
-    margin: 4px 2px;
-    box-shadow: 2px 2px 3px rgb(0 0 0 / 20%);
-    position: absolute;
-    cursor: default;
-}
-.solution-cube {
+.goal-cube, .solution-cube {
     margin: 4px 2px;
     box-shadow: 2px 2px 3px rgb(0 0 0 / 20%);
     position: absolute;
@@ -429,7 +423,9 @@ header h1 {
 
 .red .background-div {background-color: rgb(196, 41, 38)}
 .blue .background-div {background-color: rgb(28, 116, 227)}
-.goal-cube.blue .background-div, .solution-cube.blue .background-div {background-color: rgb(44, 120, 214)}
+.goal-cube.blue .background-div, .solution-cube.blue .background-div {
+    background-color: rgb(44, 120, 214)
+}
 .green .background-div {background-color: rgb(21, 156, 95)}
 .cube.black .background-div {background-color: rgb(23, 41, 53)}
 .cube .cube-content {
@@ -1432,6 +1428,8 @@ header h1 {
     #solution-view-container {
         padding: 0 8px;
     }
+
+
     #equals-container {
         height: 14px;
         width: 44px;

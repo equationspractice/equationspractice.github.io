@@ -1335,13 +1335,13 @@ const problemSet2 = [
                 <li>\\(\\sqrt[n]{-i} = \\sqrt{-i}\\)</li>
             </ul>
             <p>Interpreting the goal as \\(\\sqrt[26]{i}\\) gives us a solution of \\(\\sqrt{i}\\), whereas interpreting the goal as \\(\\sqrt[26]{-i}\\) gives us a solution of \\(\\sqrt{-i}\\).</p>
-            <p>If we instead use the <em>Factorial</em> variation to intepret our goal as \\((35! - 9)\\sqrt{i}\\), our new index (\\(35! - 9\\)) falls into the \\(4k - 1\\) pattern (we can subtract \\(8\\) from \\(4k - 1\\) to get \\(4k - 9\\)). Our rule for \\(n = 8k - 1\\) is as follows:</p>
+            <p>If we instead use the <em>Factorial</em> variation to intepret our goal as \\((35! - 9)\\sqrt{i}\\), our new index (\\(35! - 9\\)) falls into the \\(4k - 1\\) pattern (we can subtract \\(8\\) from \\(4k - 1\\) to get \\(4k - 9\\)). Our rule for \\(n = 4k - 1\\) is as follows:</p>
             <ul style="margin-top: -16px">
                 <li>\\(\\sqrt[n]{i} = -i\\)</li>
                 <li>\\(\\sqrt[n]{-i} = i\\)</li>
             </ul>
             <p>Interpreting the goal as \\((35! - 9)\\sqrt{i}\\) gives us a solution of \\(-i\\), whereas interpreting the goal as \\((35! - 9)\\sqrt{-i}\\) gives us a solution of \\(i\\).</p>
-            <p>In conclusion, our correct answer choices are \\(\\sqrt{i}\\), \\(\\sqrt{-i}\\), \\(i\\), \\(-i\\).</p>
+            <p>In conclusion, our correct answer choices are \\(\\sqrt{i}\\), \\(\\sqrt{-i}\\), \\(i\\), and \\(-i\\).</p>
             `
         },
         type: 'multi-select',
@@ -1400,7 +1400,7 @@ const problemSet2 = [
     },
     {   
         content: (questionContent) => {
-            questionContent.innerHTML += `<p>Given the goal below and the following variations: <em>Black Exponent</em>, <em>Base \\(11\\)</em>, <em>Imaginary</em></p>`
+            questionContent.innerHTML += `<p>Given the goal below and the following variations: <em>Black Exponent</em>, <em>Base \\(12\\)</em>, <em>Imaginary</em></p>`
             questionContent.append(createSmallBoard({goal: [
                 {symbol: '^', color: 'green'},
                 {symbol: '7', color: 'black'},
